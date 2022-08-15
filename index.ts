@@ -1081,3 +1081,4 @@ app.get("/genresAll/:genre", async (req, res) => {
 //   }
 // }
 // #endregion
+module.exports = app;
