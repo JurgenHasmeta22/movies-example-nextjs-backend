@@ -85,7 +85,7 @@ app.post("/login", async (req, res) => {
       //@ts-ignore
       user.favMovies = await prisma.movie.findMany({
         //@ts-ignore
-        where: { id: { in: favorites.map((f) => f.movieId) } },
+        where: { id: { in: favorites.map((f: any) => f.movieId) } },
         include: { genres: { include: { genre: true } } },
       });
 
@@ -113,7 +113,7 @@ app.get("/validate", async (req, res) => {
     //@ts-ignore
     user.favMovies = await prisma.movie.findMany({
       //@ts-ignore
-      where: { id: { in: favorites.map((f) => f.movieId) } },
+      where: { id: { in: favorites.map((f: any) => f.movieId) } },
       include: { genres: { include: { genre: true } } },
     });
 
