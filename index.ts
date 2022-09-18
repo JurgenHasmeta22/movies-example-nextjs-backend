@@ -134,8 +134,14 @@ app.get("/movies/page/:pagenr", async (req, res) => {
   const ascOrDesc = req.query.ascOrDesc;
   const perPage = Number(req.query.perPage);
   const page = Number(req.params.pagenr);
-  const titleQuery = req.query.title
+  const titleQuery = req.query.title;
   const title = String(req.query.title);
+  const filterValue = req.query.filterValue;
+  const filterName = req.query.filterName;
+  const filterOperator = req.query.filterOperator;
+  const filterValueString = String(req.query.filterValue);
+  const filterNameString = String(req.query.filterName);
+  const filterOperatorString = String(req.query.filterOperator);
   let nrToSkip;
   if (perPage) {
     nrToSkip = (page - 1) * perPage;
@@ -144,7 +150,8 @@ app.get("/movies/page/:pagenr", async (req, res) => {
   }
   try {
     let movies;
-    if (!titleQuery) {
+    let count;
+    if (!titleQuery && !filterValue) {
       movies = await prisma.movie.findMany({
         include: { genres: { include: { genre: true } } },
         orderBy: {
@@ -153,8 +160,9 @@ app.get("/movies/page/:pagenr", async (req, res) => {
         },
         skip: nrToSkip,
         take: perPage ? perPage : 20,
-      })
-    } else {
+      });
+      count = await prisma.movie.count();
+    } else if (titleQuery && !filterValue) {
       movies = await prisma.movie.findMany({
         where: {
           title: { contains: title },
@@ -166,9 +174,32 @@ app.get("/movies/page/:pagenr", async (req, res) => {
         },
         skip: nrToSkip,
         take: perPage ? perPage : 20,
-      })
+      });
+      count = await prisma.movie.count({
+        where: {
+          title: { contains: title },
+        },
+      });
+    } else if (!titleQuery && filterValue) {
+      movies = await prisma.movie.findMany({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+        include: { genres: { include: { genre: true } } },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+      count = await prisma.movie.count({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+      });
     }
-    res.send({ rows: movies, count: movies.length });
+    res.send({ rows: movies, count });
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
@@ -180,7 +211,7 @@ app.get("/series/page/:pagenr", async (req, res) => {
   const ascOrDesc = req.query.ascOrDesc;
   const perPage = Number(req.query.perPage);
   const page = Number(req.params.pagenr);
-  const titleQuery = req.query.title
+  const titleQuery = req.query.title;
   const title = String(req.query.title);
   let nrToSkip;
   if (perPage) {
@@ -189,7 +220,8 @@ app.get("/series/page/:pagenr", async (req, res) => {
     nrToSkip = (page - 1) * 20;
   }
   try {
-    let series
+    let series;
+    let count;
     if (titleQuery) {
       series = await prisma.serie.findMany({
         where: {
@@ -201,7 +233,12 @@ app.get("/series/page/:pagenr", async (req, res) => {
         },
         skip: nrToSkip,
         take: perPage ? perPage : 20,
-      })
+      });
+      count = await prisma.serie.count({
+        where: {
+          title: { contains: title },
+        },
+      });
     } else {
       series = await prisma.serie.findMany({
         orderBy: {
@@ -210,9 +247,10 @@ app.get("/series/page/:pagenr", async (req, res) => {
         },
         skip: nrToSkip,
         take: perPage ? perPage : 20,
-      })
+      });
+      count = await prisma.serie.count();
     }
-    res.send({ rows: series, count: series.length });
+    res.send({ rows: series, count });
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
@@ -224,7 +262,7 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
   const ascOrDesc = req.query.ascOrDesc;
   const perPage = Number(req.query.perPage);
   const page = Number(req.params.pagenr);
-  const titleQuery = req.query.title
+  const titleQuery = req.query.title;
   const title = String(req.query.title);
   let nrToSkip;
   if (perPage) {
@@ -233,7 +271,8 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
     nrToSkip = (page - 1) * 20;
   }
   try {
-    let episodes
+    let episodes;
+    let count;
     if (titleQuery) {
       episodes = await prisma.episode.findMany({
         where: {
@@ -246,6 +285,11 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
         skip: nrToSkip,
         take: perPage ? perPage : 20,
       });
+      count = await prisma.episode.count({
+        where: {
+          title: { contains: title },
+        },
+      });
     } else {
       episodes = await prisma.episode.findMany({
         orderBy: {
@@ -255,8 +299,9 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
         skip: nrToSkip,
         take: perPage ? perPage : 20,
       });
+      count = await prisma.episode.count();
     }
-    res.send({ rows: episodes, count: episodes.length });
+    res.send({ rows: episodes, count });
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
@@ -268,7 +313,7 @@ app.get("/genres/page/:pagenr", async (req, res) => {
   const ascOrDesc = req.query.ascOrDesc;
   const perPage = Number(req.query.perPage);
   const page = Number(req.params.pagenr);
-  const titleQuery = req.query.title
+  const titleQuery = req.query.title;
   const title = String(req.query.title);
   let nrToSkip;
   if (perPage) {
@@ -277,7 +322,8 @@ app.get("/genres/page/:pagenr", async (req, res) => {
     nrToSkip = (page - 1) * 20;
   }
   try {
-    let genres
+    let genres;
+    let count;
     if (titleQuery) {
       genres = await prisma.genre.findMany({
         where: {
@@ -290,6 +336,11 @@ app.get("/genres/page/:pagenr", async (req, res) => {
         skip: nrToSkip,
         take: perPage ? perPage : 20,
       });
+      count = await prisma.genre.count({
+        where: {
+          name: { contains: title },
+        },
+      });
     } else {
       genres = await prisma.genre.findMany({
         orderBy: {
@@ -299,8 +350,9 @@ app.get("/genres/page/:pagenr", async (req, res) => {
         skip: nrToSkip,
         take: perPage ? perPage : 20,
       });
+      count = await prisma.genre.count();
     }
-    res.send({ rows: genres, count: genres.length });
+    res.send({ rows: genres, count });
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
@@ -312,7 +364,7 @@ app.get("/users/page/:pagenr", async (req, res) => {
   const ascOrDesc = req.query.ascOrDesc;
   const perPage = Number(req.query.perPage);
   const page = Number(req.params.pagenr);
-  const titleQuery = req.query.title
+  const titleQuery = req.query.title;
   const title = String(req.query.title);
   let nrToSkip;
   if (perPage) {
@@ -321,7 +373,8 @@ app.get("/users/page/:pagenr", async (req, res) => {
     nrToSkip = (page - 1) * 20;
   }
   try {
-    let users
+    let users;
+    let count;
     if (titleQuery) {
       users = await prisma.user.findMany({
         where: {
@@ -334,6 +387,11 @@ app.get("/users/page/:pagenr", async (req, res) => {
         skip: nrToSkip,
         take: perPage ? perPage : 20,
       });
+      count = await prisma.user.count({
+        where: {
+          userName: { contains: title },
+        },
+      });
     } else {
       users = await prisma.user.findMany({
         orderBy: {
@@ -343,8 +401,9 @@ app.get("/users/page/:pagenr", async (req, res) => {
         skip: nrToSkip,
         take: perPage ? perPage : 20,
       });
+      count = await prisma.user.count();
     }
-    res.send({ rows: users, count: users.length });
+    res.send({ rows: users, count });
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
