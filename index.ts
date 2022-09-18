@@ -139,9 +139,20 @@ app.get("/movies/page/:pagenr", async (req, res) => {
   const filterValue = req.query.filterValue;
   const filterName = req.query.filterName;
   const filterOperator = req.query.filterOperator;
-  const filterValueString = String(req.query.filterValue);
+  let filterValueString: number | string = String(req.query.filterValue);
+  if (filterValueString.match(/\d+/g) != null) {
+    filterValueString = Number(filterValueString)
+  }
   const filterNameString = String(req.query.filterName);
-  const filterOperatorString = String(req.query.filterOperator);
+  let filterOperatorString = String(req.query.filterOperator);
+  // console.log(filterOperator, filterOperatorString)
+   if (filterOperatorString === ">") {
+    filterOperatorString = "gt"
+   } else if (filterOperatorString === "=") {
+    filterOperatorString = "equals"
+  } else if (filterOperatorString === "<") {
+    filterOperatorString = "lt"
+  }
   let nrToSkip;
   if (perPage) {
     nrToSkip = (page - 1) * perPage;
