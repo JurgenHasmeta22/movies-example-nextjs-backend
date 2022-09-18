@@ -132,24 +132,43 @@ app.get("/validate", async (req, res) => {
 app.get("/movies/page/:pagenr", async (req, res) => {
   const sortBy = req.query.sortBy;
   const ascOrDesc = req.query.ascOrDesc;
-
+  const perPage = Number(req.query.perPage);
   const page = Number(req.params.pagenr);
-  const nrToSkip = (page - 1) * 20;
-
+  const titleQuery = req.query.title
+  const title = String(req.query.title);
+  let nrToSkip;
+  if (perPage) {
+    nrToSkip = (page - 1) * perPage;
+  } else {
+    nrToSkip = (page - 1) * 20;
+  }
   try {
-    const movies = await prisma.movie.findMany({
-      include: { genres: { include: { genre: true } } },
-
-      orderBy: {
-        //@ts-ignore
-        [sortBy]: ascOrDesc,
-      },
-
-      skip: nrToSkip,
-      take: 20,
-    });
-
-    res.send(movies);
+    let movies;
+    if (!titleQuery) {
+      movies = await prisma.movie.findMany({
+        include: { genres: { include: { genre: true } } },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      })
+    } else {
+      movies = await prisma.movie.findMany({
+        where: {
+          title: { contains: title },
+        },
+        include: { genres: { include: { genre: true } } },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      })
+    }
+    res.send({ rows: movies, count: movies.length });
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
@@ -159,24 +178,173 @@ app.get("/movies/page/:pagenr", async (req, res) => {
 app.get("/series/page/:pagenr", async (req, res) => {
   const sortBy = req.query.sortBy;
   const ascOrDesc = req.query.ascOrDesc;
-
+  const perPage = Number(req.query.perPage);
   const page = Number(req.params.pagenr);
-  const nrToSkip = (page - 1) * 20;
-
+  const titleQuery = req.query.title
+  const title = String(req.query.title);
+  let nrToSkip;
+  if (perPage) {
+    nrToSkip = (page - 1) * perPage;
+  } else {
+    nrToSkip = (page - 1) * 20;
+  }
   try {
-    const series = await prisma.serie.findMany({
-      // include: { genres: { include: { genre: true } } },
+    let series
+    if (titleQuery) {
+      series = await prisma.serie.findMany({
+        where: {
+          title: { contains: title },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      })
+    } else {
+      series = await prisma.serie.findMany({
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      })
+    }
+    res.send({ rows: series, count: series.length });
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
 
-      orderBy: {
-        //@ts-ignore
-        [sortBy]: ascOrDesc,
-      },
+app.get("/episodes/page/:pagenr", async (req, res) => {
+  const sortBy = req.query.sortBy;
+  const ascOrDesc = req.query.ascOrDesc;
+  const perPage = Number(req.query.perPage);
+  const page = Number(req.params.pagenr);
+  const titleQuery = req.query.title
+  const title = String(req.query.title);
+  let nrToSkip;
+  if (perPage) {
+    nrToSkip = (page - 1) * perPage;
+  } else {
+    nrToSkip = (page - 1) * 20;
+  }
+  try {
+    let episodes
+    if (titleQuery) {
+      episodes = await prisma.episode.findMany({
+        where: {
+          title: { contains: title },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+    } else {
+      episodes = await prisma.episode.findMany({
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+    }
+    res.send({ rows: episodes, count: episodes.length });
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
 
-      skip: nrToSkip,
-      take: 20,
-    });
+app.get("/genres/page/:pagenr", async (req, res) => {
+  const sortBy = req.query.sortBy;
+  const ascOrDesc = req.query.ascOrDesc;
+  const perPage = Number(req.query.perPage);
+  const page = Number(req.params.pagenr);
+  const titleQuery = req.query.title
+  const title = String(req.query.title);
+  let nrToSkip;
+  if (perPage) {
+    nrToSkip = (page - 1) * perPage;
+  } else {
+    nrToSkip = (page - 1) * 20;
+  }
+  try {
+    let genres
+    if (titleQuery) {
+      genres = await prisma.genre.findMany({
+        where: {
+          name: { contains: title },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+    } else {
+      genres = await prisma.genre.findMany({
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+    }
+    res.send({ rows: genres, count: genres.length });
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
 
-    res.send(series);
+app.get("/users/page/:pagenr", async (req, res) => {
+  const sortBy = req.query.sortBy;
+  const ascOrDesc = req.query.ascOrDesc;
+  const perPage = Number(req.query.perPage);
+  const page = Number(req.params.pagenr);
+  const titleQuery = req.query.title
+  const title = String(req.query.title);
+  let nrToSkip;
+  if (perPage) {
+    nrToSkip = (page - 1) * perPage;
+  } else {
+    nrToSkip = (page - 1) * 20;
+  }
+  try {
+    let users
+    if (titleQuery) {
+      users = await prisma.user.findMany({
+        where: {
+          userName: { contains: title },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+    } else {
+      users = await prisma.user.findMany({
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+    }
+    res.send({ rows: users, count: users.length });
   } catch (err) {
     // @ts-ignore
     res.status(400).send({ error: err.message });
@@ -235,6 +403,15 @@ app.get("/latest", async (req, res) => {
   res.send(latestMovies);
 });
 
+app.get("/movies-count", async (req, res) => {
+  try {
+    const count = await prisma.movie.count();
+    res.send({ count });
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
 app.get("/movie-count", async (req, res) => {
   try {
     const count = await prisma.movie.count();
@@ -531,7 +708,33 @@ app.get("/series-count", async (req, res) => {
     res.status(400).send({ error: err.message });
   }
 });
-
+app.get("/episodes-count", async (req, res) => {
+  try {
+    const count = await prisma.episode.count();
+    res.send({ count });
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
+app.get("/genres-count", async (req, res) => {
+  try {
+    const count = await prisma.genre.count();
+    res.send({ count });
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
+app.get("/users-count", async (req, res) => {
+  try {
+    const count = await prisma.user.count();
+    res.send({ count });
+  } catch (err) {
+    // @ts-ignore
+    res.status(400).send({ error: err.message });
+  }
+});
 app.post("/search", async (req, res) => {
   const { title, page } = req.body;
 
