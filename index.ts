@@ -145,7 +145,6 @@ app.get("/movies/page/:pagenr", async (req, res) => {
   }
   const filterNameString = String(req.query.filterName);
   let filterOperatorString = String(req.query.filterOperator);
-  // console.log(filterOperator, filterOperatorString)
    if (filterOperatorString === ">") {
     filterOperatorString = "gt"
    } else if (filterOperatorString === "=") {
@@ -224,6 +223,22 @@ app.get("/series/page/:pagenr", async (req, res) => {
   const page = Number(req.params.pagenr);
   const titleQuery = req.query.title;
   const title = String(req.query.title);
+  const filterValue = req.query.filterValue;
+  const filterName = req.query.filterName;
+  const filterOperator = req.query.filterOperator;
+  let filterValueString: number | string = String(req.query.filterValue);
+  if (filterValueString.match(/\d+/g) != null) {
+    filterValueString = Number(filterValueString)
+  }
+  const filterNameString = String(req.query.filterName);
+  let filterOperatorString = String(req.query.filterOperator);
+   if (filterOperatorString === ">") {
+    filterOperatorString = "gt"
+   } else if (filterOperatorString === "=") {
+    filterOperatorString = "equals"
+  } else if (filterOperatorString === "<") {
+    filterOperatorString = "lt"
+  }
   let nrToSkip;
   if (perPage) {
     nrToSkip = (page - 1) * perPage;
@@ -233,7 +248,7 @@ app.get("/series/page/:pagenr", async (req, res) => {
   try {
     let series;
     let count;
-    if (titleQuery) {
+    if (titleQuery && !filterValue) {
       series = await prisma.serie.findMany({
         where: {
           title: { contains: title },
@@ -250,7 +265,7 @@ app.get("/series/page/:pagenr", async (req, res) => {
           title: { contains: title },
         },
       });
-    } else {
+    } else if (!titleQuery && !filterValue) {
       series = await prisma.serie.findMany({
         orderBy: {
           //@ts-ignore
@@ -260,6 +275,23 @@ app.get("/series/page/:pagenr", async (req, res) => {
         take: perPage ? perPage : 20,
       });
       count = await prisma.serie.count();
+    } else if (!titleQuery && filterValue) {
+      series = await prisma.serie.findMany({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+      count = await prisma.serie.count({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+      });
     }
     res.send({ rows: series, count });
   } catch (err) {
@@ -275,6 +307,22 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
   const page = Number(req.params.pagenr);
   const titleQuery = req.query.title;
   const title = String(req.query.title);
+  const filterValue = req.query.filterValue;
+  const filterName = req.query.filterName;
+  const filterOperator = req.query.filterOperator;
+  let filterValueString: number | string = String(req.query.filterValue);
+  if (filterValueString.match(/\d+/g) != null) {
+    filterValueString = Number(filterValueString)
+  }
+  const filterNameString = String(req.query.filterName);
+  let filterOperatorString = String(req.query.filterOperator);
+   if (filterOperatorString === ">") {
+    filterOperatorString = "gt"
+   } else if (filterOperatorString === "=") {
+    filterOperatorString = "equals"
+  } else if (filterOperatorString === "<") {
+    filterOperatorString = "lt"
+  }
   let nrToSkip;
   if (perPage) {
     nrToSkip = (page - 1) * perPage;
@@ -284,7 +332,7 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
   try {
     let episodes;
     let count;
-    if (titleQuery) {
+    if (titleQuery && !filterValue) {
       episodes = await prisma.episode.findMany({
         where: {
           title: { contains: title },
@@ -301,7 +349,7 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
           title: { contains: title },
         },
       });
-    } else {
+    } else if (!titleQuery && !filterValue) {
       episodes = await prisma.episode.findMany({
         orderBy: {
           //@ts-ignore
@@ -311,6 +359,23 @@ app.get("/episodes/page/:pagenr", async (req, res) => {
         take: perPage ? perPage : 20,
       });
       count = await prisma.episode.count();
+    } else if (!titleQuery && filterValue) {
+      episodes = await prisma.episode.findMany({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+      count = await prisma.episode.count({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+      });
     }
     res.send({ rows: episodes, count });
   } catch (err) {
@@ -326,6 +391,22 @@ app.get("/genres/page/:pagenr", async (req, res) => {
   const page = Number(req.params.pagenr);
   const titleQuery = req.query.title;
   const title = String(req.query.title);
+  const filterValue = req.query.filterValue;
+  const filterName = req.query.filterName;
+  const filterOperator = req.query.filterOperator;
+  let filterValueString: number | string = String(req.query.filterValue);
+  if (filterValueString.match(/\d+/g) != null) {
+    filterValueString = Number(filterValueString)
+  }
+  const filterNameString = String(req.query.filterName);
+  let filterOperatorString = String(req.query.filterOperator);
+   if (filterOperatorString === ">") {
+    filterOperatorString = "gt"
+   } else if (filterOperatorString === "=") {
+    filterOperatorString = "equals"
+  } else if (filterOperatorString === "<") {
+    filterOperatorString = "lt"
+  }
   let nrToSkip;
   if (perPage) {
     nrToSkip = (page - 1) * perPage;
@@ -335,7 +416,7 @@ app.get("/genres/page/:pagenr", async (req, res) => {
   try {
     let genres;
     let count;
-    if (titleQuery) {
+    if (titleQuery && !filterValue) {
       genres = await prisma.genre.findMany({
         where: {
           name: { contains: title },
@@ -352,7 +433,7 @@ app.get("/genres/page/:pagenr", async (req, res) => {
           name: { contains: title },
         },
       });
-    } else {
+    } else if (!titleQuery && !filterValue) {
       genres = await prisma.genre.findMany({
         orderBy: {
           //@ts-ignore
@@ -362,6 +443,23 @@ app.get("/genres/page/:pagenr", async (req, res) => {
         take: perPage ? perPage : 20,
       });
       count = await prisma.genre.count();
+    } else if (!titleQuery && filterValue) {
+      genres = await prisma.genre.findMany({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+      count = await prisma.genre.count({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+      });
     }
     res.send({ rows: genres, count });
   } catch (err) {
@@ -377,6 +475,22 @@ app.get("/users/page/:pagenr", async (req, res) => {
   const page = Number(req.params.pagenr);
   const titleQuery = req.query.title;
   const title = String(req.query.title);
+  const filterValue = req.query.filterValue;
+  const filterName = req.query.filterName;
+  const filterOperator = req.query.filterOperator;
+  let filterValueString: number | string = String(req.query.filterValue);
+  if (filterValueString.match(/\d+/g) != null) {
+    filterValueString = Number(filterValueString)
+  }
+  const filterNameString = String(req.query.filterName);
+  let filterOperatorString = String(req.query.filterOperator);
+   if (filterOperatorString === ">") {
+    filterOperatorString = "gt"
+   } else if (filterOperatorString === "=") {
+    filterOperatorString = "equals"
+  } else if (filterOperatorString === "<") {
+    filterOperatorString = "lt"
+  }
   let nrToSkip;
   if (perPage) {
     nrToSkip = (page - 1) * perPage;
@@ -386,7 +500,7 @@ app.get("/users/page/:pagenr", async (req, res) => {
   try {
     let users;
     let count;
-    if (titleQuery) {
+    if (titleQuery && !filterValue) {
       users = await prisma.user.findMany({
         where: {
           userName: { contains: title },
@@ -403,7 +517,7 @@ app.get("/users/page/:pagenr", async (req, res) => {
           userName: { contains: title },
         },
       });
-    } else {
+    } else if (!titleQuery && !filterValue) {
       users = await prisma.user.findMany({
         orderBy: {
           //@ts-ignore
@@ -413,6 +527,23 @@ app.get("/users/page/:pagenr", async (req, res) => {
         take: perPage ? perPage : 20,
       });
       count = await prisma.user.count();
+    } else if (!titleQuery && filterValue) {
+      users = await prisma.user.findMany({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+        orderBy: {
+          //@ts-ignore
+          [sortBy]: ascOrDesc,
+        },
+        skip: nrToSkip,
+        take: perPage ? perPage : 20,
+      });
+      count = await prisma.user.count({
+        where: {
+          [filterNameString]: { [filterOperatorString]: filterValueString },
+        },
+      });
     }
     res.send({ rows: users, count });
   } catch (err) {
