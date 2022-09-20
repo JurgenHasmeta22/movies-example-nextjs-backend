@@ -1137,7 +1137,7 @@ app.get("/genresNoPagination/:id", async (req, res) => {
 
   const genre = await prisma.genre.findFirst({
     where: { id: genreId },
-    include: { movies: true },
+    include: { movies: {include: {movie: true}} },
   });
 
   try {
@@ -1168,6 +1168,7 @@ app.get("/usersNoPagination/:id", async (req, res) => {
 
   const user = await prisma.user.findFirst({
     where: { id: userId },
+    include: {favoriteMovies: {include: {movie: true}}}
   });
 
   try {
