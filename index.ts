@@ -27,6 +27,7 @@ function createToken(id: number) {
     });
     return token;
 }
+
 async function getUserFromToken(token: string) {
     //@ts-ignore
     const data = jwt.verify(token, process.env.MY_SECRET);
@@ -54,6 +55,7 @@ app.post('/sign-up', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -83,6 +85,7 @@ app.post('/login', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/validate', async (req, res) => {
     const token = req.headers.authorization || '';
 
@@ -198,6 +201,7 @@ app.get('/movies/page/:pagenr', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/series/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
     const ascOrDesc = req.query.ascOrDesc;
@@ -288,6 +292,7 @@ app.get('/series/page/:pagenr', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/episodes/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
     const ascOrDesc = req.query.ascOrDesc;
@@ -378,6 +383,7 @@ app.get('/episodes/page/:pagenr', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/genres/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
     const ascOrDesc = req.query.ascOrDesc;
@@ -468,6 +474,7 @@ app.get('/genres/page/:pagenr', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/users/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
     const ascOrDesc = req.query.ascOrDesc;
@@ -558,6 +565,7 @@ app.get('/users/page/:pagenr', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/genres', async (req, res) => {
     try {
         const genres = await prisma.genre.findMany();
@@ -567,6 +575,7 @@ app.get('/genres', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/users', async (req, res) => {
     try {
         const users = await prisma.user.findMany();
@@ -576,6 +585,7 @@ app.get('/users', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/movies', async (req, res) => {
     try {
         const movies = await prisma.movie.findMany();
@@ -585,6 +595,7 @@ app.get('/movies', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/series', async (req, res) => {
     try {
         const series = await prisma.serie.findMany();
@@ -594,6 +605,7 @@ app.get('/series', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/episodes', async (req, res) => {
     try {
         const episodes = await prisma.episode.findMany();
@@ -603,6 +615,7 @@ app.get('/episodes', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/seriesNoPagination/:id', async (req, res) => {
     const serieId = Number(req.params.id);
     const serie = await prisma.serie.findFirst({
@@ -617,6 +630,7 @@ app.get('/seriesNoPagination/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/episodesNoPagination/:id', async (req, res) => {
     const episodeId = Number(req.params.id);
     const episode = await prisma.episode.findFirst({
@@ -631,6 +645,7 @@ app.get('/episodesNoPagination/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/genresNoPagination/:id', async (req, res) => {
     const genreId = Number(req.params.id);
     const genre = await prisma.genre.findFirst({
@@ -645,6 +660,7 @@ app.get('/genresNoPagination/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/moviesNoPagination/:id', async (req, res) => {
     const movieId = Number(req.params.id);
     const movie = await prisma.movie.findFirst({
@@ -659,6 +675,7 @@ app.get('/moviesNoPagination/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/usersNoPagination/:id', async (req, res) => {
     const userId = Number(req.params.id);
     const user = await prisma.user.findFirst({
@@ -691,6 +708,7 @@ app.get('/movie/:title', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/seria/:title', async (req, res) => {
     const title = req.params.title
         .split('')
@@ -708,6 +726,7 @@ app.get('/seria/:title', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/series/:serie', async (req, res) => {
     const serie = req.params.serie;
     let page = Number(req.query.page);
@@ -726,6 +745,7 @@ app.get('/series/:serie', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/genresAll/:genre', async (req, res) => {
     const genre = req.params.genre;
     const genreId = await prisma.genre.findFirst({
@@ -757,6 +777,7 @@ app.get('/genresAll/:genre', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/genres/:genre', async (req, res) => {
     const genre = req.params.genre;
     const page = Number(req.query.page);
@@ -805,6 +826,7 @@ app.get('/favorites', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/latest', async (req, res) => {
     const latestMovies = await prisma.movie.findMany({
         orderBy: {
@@ -825,6 +847,7 @@ app.get('/movies-count', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/movie-count', async (req, res) => {
     try {
         const count = await prisma.movie.count();
@@ -834,6 +857,7 @@ app.get('/movie-count', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/series-count', async (req, res) => {
     try {
         const count = await prisma.serie.count();
@@ -843,6 +867,7 @@ app.get('/series-count', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/episodes-count', async (req, res) => {
     try {
         const count = await prisma.episode.count();
@@ -852,6 +877,7 @@ app.get('/episodes-count', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/genres-count', async (req, res) => {
     try {
         const count = await prisma.genre.count();
@@ -861,6 +887,7 @@ app.get('/genres-count', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.get('/users-count', async (req, res) => {
     try {
         const count = await prisma.user.count();
@@ -896,6 +923,7 @@ app.post('/search', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.post('/favorites', async (req, res) => {
     const token = req.headers.authorization || '';
     const { movieId } = req.body;
@@ -925,6 +953,7 @@ app.post('/favorites', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.post('/series', async (req, res) => {
     const { title, photoSrc, ratingImdb, releaseYear } = req.body;
     const series = await prisma.serie.findMany();
@@ -947,6 +976,7 @@ app.post('/series', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.post('/episodes', async (req, res) => {
     const { title, photoSrc, videoSrc, description, serieId } = req.body;
     const episodes = await prisma.episode.findMany();
@@ -998,6 +1028,7 @@ app.delete('/genres/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.delete('/episodes/:id', async (req, res) => {
     const idParam = Number(req.params.id);
 
@@ -1025,6 +1056,7 @@ app.delete('/episodes/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.delete('/movies/:id', async (req, res) => {
     const idParam = Number(req.params.id);
 
@@ -1051,6 +1083,7 @@ app.delete('/movies/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.delete('/series/:id', async (req, res) => {
     const idParam = Number(req.params.id);
 
@@ -1077,6 +1110,7 @@ app.delete('/series/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.delete('/users/:id', async (req, res) => {
     const idParam = Number(req.params.id);
     try {
@@ -1132,6 +1166,7 @@ app.patch('/series/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
+
 app.patch('/episodes/:id', async (req, res) => {
     const { id, title, photoSrc, videoSrc, description } = req.body;
     const updatedEpisode = {
