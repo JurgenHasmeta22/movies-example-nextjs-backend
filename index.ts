@@ -39,7 +39,6 @@ async function getUserFromToken(token: string) {
     return user;
 }
 
-
 app.post('/sign-up', async (req, res) => {
     const { email, password, userName } = req.body;
 
@@ -108,7 +107,6 @@ app.get('/validate', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
 
 app.get('/movies/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
@@ -568,7 +566,6 @@ app.get('/users/page/:pagenr', async (req, res) => {
     }
 });
 
-
 app.get('/genres', async (req, res) => {
     try {
         const genres = await prisma.genre.findMany();
@@ -618,7 +615,6 @@ app.get('/episodes', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
 
 app.get('/seriesNoPagination/:id', async (req, res) => {
     const serieId = Number(req.params.id);
@@ -694,7 +690,6 @@ app.get('/usersNoPagination/:id', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
 
 app.get('/movie/:title', async (req, res) => {
     const title = req.params.title
@@ -817,7 +812,6 @@ app.get('/genres/:genre', async (req, res) => {
     }
 });
 
-
 app.get('/favorites', async (req, res) => {
     const token = req.headers.authorization || '';
 
@@ -843,7 +837,6 @@ app.get('/latest', async (req, res) => {
     });
     res.send(latestMovies);
 });
-
 
 app.get('/movies-count', async (req, res) => {
     try {
@@ -904,7 +897,6 @@ app.get('/users-count', async (req, res) => {
         res.status(400).send({ error: err.message });
     }
 });
-
 
 app.post('/search', async (req, res) => {
     const { title, page } = req.body;
@@ -1009,7 +1001,6 @@ app.post('/episodes', async (req, res) => {
     }
 });
 
-
 app.delete('/genres/:id', async (req, res) => {
     const idParam = Number(req.params.id);
 
@@ -1028,9 +1019,7 @@ app.delete('/genres/:id', async (req, res) => {
                 rows: genres,
             });
         } else {
-            throw Error(
-                'You are not authorized, or Event with this Id doesnt exist!'
-            );
+            throw Error('You are not authorized, or Event with this Id doesnt exist!');
         }
     } catch (err) {
         //@ts-ignore
@@ -1056,9 +1045,7 @@ app.delete('/episodes/:id', async (req, res) => {
                 rows: episodes,
             });
         } else {
-            throw Error(
-                'You are not authorized, or Event with this Id doesnt exist!'
-            );
+            throw Error('You are not authorized, or Event with this Id doesnt exist!');
         }
     } catch (err) {
         //@ts-ignore
@@ -1083,9 +1070,7 @@ app.delete('/movies/:id', async (req, res) => {
                 rows: movies,
             });
         } else {
-            throw Error(
-                'You are not authorized, or Event with this Id doesnt exist!'
-            );
+            throw Error('You are not authorized, or Event with this Id doesnt exist!');
         }
     } catch (err) {
         //@ts-ignore
@@ -1110,9 +1095,7 @@ app.delete('/series/:id', async (req, res) => {
                 rows: series,
             });
         } else {
-            throw Error(
-                'You are not authorized, or Event with this Id doesnt exist!'
-            );
+            throw Error('You are not authorized, or Event with this Id doesnt exist!');
         }
     } catch (err) {
         //@ts-ignore
@@ -1137,9 +1120,7 @@ app.delete('/users/:id', async (req, res) => {
                 rows: users,
             });
         } else {
-            throw Error(
-                'You are not authorized, or Event with this Id doesnt exist!'
-            );
+            throw Error('You are not authorized, or Event with this Id doesnt exist!');
         }
     } catch (err) {
         //@ts-ignore
