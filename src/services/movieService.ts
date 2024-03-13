@@ -1,6 +1,6 @@
 import { prisma } from '../index';
 import { Favorite } from '../models/favorite';
-import { Movie } from '../models/movie';
+import { Movie, MoviePatch, MoviePost } from '../models/movie';
 import { User } from '../models/user';
 
 interface MovieServiceParams {
@@ -165,7 +165,40 @@ const movieService = {
             return null;
         }
     },
-    async deleteMovieById(id: number): Promise<string> {
+    async updateMovieById(movieParam: MoviePatch): Promise<Movie | null> {
+        const movie: Movie | null = await prisma.movie.findUnique({
+            where: { id: movieParam.id },
+        });
+
+        if (movie) {
+            const movieUpdated = await prisma.movie.update({
+                where: { id: movieParam.id },
+                data: movieParam,
+                include: { genres: { select: { genre: true } } },
+            });
+
+            if (movieUpdated) {
+                return movieUpdated;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    },
+    async addMovie(movieParam: MoviePost): Promise<Movie | null> {
+        const movieCreated = await prisma.movie.create({
+            data: movieParam,
+            include: { genres: { select: { genre: true } } },
+        });
+
+        if (movieCreated) {
+            return movieCreated;
+        } else {
+            return null;
+        }
+    },
+    async deleteMovieById(id: number): Promise<string | null> {
         const movie: Movie | null = await prisma.movie.findUnique({
             where: { id },
         });
@@ -181,7 +214,7 @@ const movieService = {
                 return 'Movie was not deleted';
             }
         } else {
-            throw new Error('You are not authorized or the movie with this id doesnt exist!');
+            return null;
         }
     },
     async searchMoviesByTitle(title: string, page: number): Promise<{ movies: Movie[]; count: number }> {

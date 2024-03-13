@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import movieService from '../services/movieService';
 import { getUserFromToken } from '../utils/authUtils';
+import { Movie } from '../models/movie';
 
 const movieController = {
     async getMovies(req: Request, res: Response) {
@@ -103,6 +104,36 @@ const movieController = {
                 res.send(updatedUser);
             } else {
                 res.status(400).send({ error: 'User not found' });
+            }
+        } catch (err) {
+            res.status(400).send({ error: (err as Error).message });
+        }
+    },
+    async updateMovieById(req: Request, res: Response) {
+        const movieBodyParams = req.body;
+
+        try {
+            const movie: Movie | null = await movieService.updateMovieById(movieBodyParams);
+
+            if (movie) {
+                res.send(movie);
+            } else {
+                res.status(400).send({ error: 'Movie not updated correctly' });
+            }
+        } catch (err) {
+            res.status(400).send({ error: (err as Error).message });
+        }
+    },
+    async addMovie(req: Request, res: Response) {
+        const movieBodyParams = req.body;
+        console.log(movieBodyParams)
+        try {
+            const movie: Movie | null = await movieService.addMovie(movieBodyParams);
+
+            if (movie) {
+                res.send(movie);
+            } else {
+                res.status(400).send({ error: 'Movie not created correctly' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
