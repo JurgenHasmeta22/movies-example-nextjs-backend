@@ -111,14 +111,15 @@ const movieController = {
     },
     async updateMovieById(req: Request, res: Response) {
         const movieBodyParams = req.body;
+        const { id } = req.params;
 
         try {
-            const movie: Movie | null = await movieService.updateMovieById(movieBodyParams);
+            const movie: Movie | null = await movieService.updateMovieById(movieBodyParams, id);
 
             if (movie) {
                 res.send(movie);
             } else {
-                res.status(400).send({ error: 'Movie not updated correctly' });
+                res.status(400).send({ error: 'Movie not updated' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
@@ -126,14 +127,14 @@ const movieController = {
     },
     async addMovie(req: Request, res: Response) {
         const movieBodyParams = req.body;
-        console.log(movieBodyParams)
+
         try {
             const movie: Movie | null = await movieService.addMovie(movieBodyParams);
 
             if (movie) {
                 res.send(movie);
             } else {
-                res.status(400).send({ error: 'Movie not created correctly' });
+                res.status(400).send({ error: 'Movie not created' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
@@ -145,7 +146,7 @@ const movieController = {
         try {
             const result = await movieService.deleteMovieById(idParam);
             res.send({
-                msg: result === 'Movie deleted successfully' ? result : 'Movie was not deleted',
+                msg: result === 'Movie deleted' ? result : 'Movie was not deleted',
             });
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });

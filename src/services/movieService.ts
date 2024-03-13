@@ -165,14 +165,14 @@ const movieService = {
             return null;
         }
     },
-    async updateMovieById(movieParam: MoviePatch): Promise<Movie | null> {
+    async updateMovieById(movieParam: MoviePatch, id: string): Promise<Movie | null> {
         const movie: Movie | null = await prisma.movie.findUnique({
-            where: { id: movieParam.id },
+            where: { id: Number(id) },
         });
 
         if (movie) {
             const movieUpdated = await prisma.movie.update({
-                where: { id: movieParam.id },
+                where: { id: Number(id) },
                 data: movieParam,
                 include: { genres: { select: { genre: true } } },
             });

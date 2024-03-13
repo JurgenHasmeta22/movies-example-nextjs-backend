@@ -1,6 +1,7 @@
 import express from 'express';
 import movieController from '../controllers/movieController';
-import { validateMovie } from '../middlewares/validateEntity';
+import { validateMovie } from '../middlewares/validateMovie';
+import { movieSchemaUpdate, movieSchemaPost } from '../schemas/movieSchema';
 
 const router = express.Router();
 
@@ -8,8 +9,8 @@ router.get('/movies', movieController.getMovies);
 router.get('/movies/:id', movieController.getMovieById);
 router.get('/movie/:title', movieController.getMovieByTitle);
 router.delete('/movies/:id', movieController.deleteMovieById);
-router.patch('/movies/:id', validateMovie, movieController.updateMovieById);
-router.post('/movies', validateMovie, movieController.addMovie);
+router.patch('/movies/:id', movieSchemaUpdate, validateMovie, movieController.updateMovieById);
+router.post('/movies', movieSchemaPost, validateMovie, movieController.addMovie);
 router.post('/searchMovies', movieController.searchMoviesByTitle);
 router.get('/latestMovies', movieController.getLatestMovies);
 router.get('/favoritesMovies', movieController.getFavoritesMoviesByUser);
