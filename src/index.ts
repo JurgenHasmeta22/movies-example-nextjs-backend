@@ -2,6 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import movieRoutes from './routes/movieRoutes';
+import episodeRoutes from './routes/episodeRoutes';
+import genreRoute from './routes/genreRoutes';
+import serieRoutes from './routes/serieRoutes';
+import userRoutes from './routes/userRoutes';
+import authRoutes from './routes/authRoutes';
 import 'dotenv/config';
 
 export const prisma = new PrismaClient({
@@ -20,7 +25,12 @@ app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
 });
 
+app.use(authRoutes);
 app.use(movieRoutes);
+app.use(serieRoutes);
+app.use(genreRoute);
+app.use(episodeRoutes);
+app.use(userRoutes);
 
 app.get('/series/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
