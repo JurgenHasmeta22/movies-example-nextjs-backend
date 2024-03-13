@@ -20,7 +20,7 @@ interface MovieServiceResponse {
 }
 
 const movieService = {
-    async getMoviesByPage({
+    async getMovies({
         sortBy,
         ascOrDesc,
         perPage,
@@ -57,7 +57,7 @@ const movieService = {
 
         if (!title && !filterValue) {
             movies = await prisma.movie.findMany({
-                include: { genres: { include: { genre: true } } },
+                include: { genres: { select: { genre: true } } },
                 orderBy: {
                     [sortBy]: ascOrDesc,
                 },
@@ -71,7 +71,7 @@ const movieService = {
                 where: {
                     title: { contains: title },
                 },
-                include: { genres: { include: { genre: true } } },
+                include: { genres: { select: { genre: true } } },
                 orderBy: {
                     [sortBy]: ascOrDesc,
                 },
@@ -92,7 +92,7 @@ const movieService = {
                             filterValueString,
                     },
                 },
-                include: { genres: { include: { genre: true } } },
+                include: { genres: { select: { genre: true } } },
                 orderBy: {
                     [sortBy]: ascOrDesc,
                 },
@@ -112,19 +112,16 @@ const movieService = {
 
         return { rows: movies, count };
     },
-    async getMovies() {
-        return await prisma.movie.findMany();
-    },
-    async getMovieNoPaginationById(movieId: number): Promise<Movie | null> {
+    async getMovieById(movieId: number): Promise<Movie | null> {
         return await prisma.movie.findFirst({
             where: { id: movieId },
-            include: { genres: { include: { genre: true } } },
+            include: { genres: { select: { genre: true } } },
         });
     },
     async getMovieByTitle(title: string): Promise<Movie | null> {
         return await prisma.movie.findFirst({
             where: { title },
-            include: { genres: { include: { genre: true } } },
+            include: { genres: { select: { genre: true } } },
         });
     },
     async getLatestMovies(): Promise<Movie[]> {
@@ -133,16 +130,13 @@ const movieService = {
                 id: 'desc',
             },
             take: 20,
-            include: { genres: { include: { genre: true } } },
+            include: { genres: { select: { genre: true } } },
         });
     },
-    async getMoviesCount(): Promise<number> {
-        const count = await prisma.movie.count();
-        return count;
-    },
-    async getFavoritesByUserId(userId: number): Promise<Favorite[]> {
+    async getFavoritesMoviesByUserId(userId: number): Promise<Favorite[]> {
         return await prisma.favorite.findMany({
             where: { userId },
+            select: { id: true, movie: true, userId: true },
         });
     },
     async addFavoriteMovieByUserId(userId: number, movieId: number): Promise<User | null> {
@@ -160,7 +154,7 @@ const movieService = {
                 favoriteMovies: {
                     where: { id: { in: favorites.map((f) => f.movieId) } },
                     // @ts-ignore
-                    include: { genres: { include: { genre: true } } },
+                    include: { genres: { select: { genre: true } } },
                 },
             },
         });
@@ -171,17 +165,21 @@ const movieService = {
             return null;
         }
     },
-    async deleteMovieById(id: number): Promise<Movie[]> {
+    async deleteMovieById(id: number): Promise<string> {
         const movie: Movie | null = await prisma.movie.findUnique({
             where: { id },
         });
 
         if (movie) {
-            await prisma.movie.delete({
+            const result = await prisma.movie.delete({
                 where: { id },
             });
 
-            return await prisma.movie.findMany();
+            if (result) {
+                return 'Movie deleted successfully';
+            } else {
+                return 'Movie was not deleted';
+            }
         } else {
             throw new Error('You are not authorized or the movie with this id doesnt exist!');
         }
@@ -191,7 +189,7 @@ const movieService = {
             where: {
                 title: { contains: title },
             },
-            include: { genres: { include: { genre: true } } },
+            include: { genres: { select: { genre: true } } },
             skip: (page - 1) * 20,
             take: 20,
         });
