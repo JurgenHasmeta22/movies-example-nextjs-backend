@@ -186,6 +186,24 @@ const movieService = {
             throw new Error('You are not authorized or the movie with this id doesnt exist!');
         }
     },
+    async searchMoviesByTitle(title: string, page: number): Promise<{ movies: Movie[]; count: number }> {
+        const movies = await prisma.movie.findMany({
+            where: {
+                title: { contains: title },
+            },
+            include: { genres: { include: { genre: true } } },
+            skip: (page - 1) * 20,
+            take: 20,
+        });
+
+        const count = await prisma.movie.count({
+            where: {
+                title: { contains: title },
+            },
+        });
+
+        return { movies, count };
+    },
 };
 
 export default movieService;

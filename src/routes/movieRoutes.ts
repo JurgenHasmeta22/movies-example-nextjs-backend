@@ -12,5 +12,6 @@ router.get('/latest', movieController.getLatestMovies);
 router.get('/favorites', movieController.getFavoritesMoviesByUser);
 router.post('/favorites', movieController.addFavoriteMovieByUser);
 router.delete('/movies/:id', movieController.deleteMovie);
+router.post('/searchMovies', movieController.searchMovies);
 
 export default router;

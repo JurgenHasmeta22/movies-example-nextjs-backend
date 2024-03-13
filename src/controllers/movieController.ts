@@ -121,6 +121,16 @@ const movieController = {
             res.status(400).send({ error: err.message });
         }
     },
+    async searchMovies(req: Request, res: Response) {
+        const { title, page } = req.body;
+
+        try {
+            const { movies, count } = await movieService.searchMoviesByTitle(title, page);
+            res.send({ movies, count });
+        } catch (err) {
+            res.status(400).send({ error: err.message });
+        }
+    },
 };
 
 export default movieController;

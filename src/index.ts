@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+import movieRoutes from './routes/movieRoutes';
 import 'dotenv/config';
 
 export const prisma = new PrismaClient({
@@ -18,6 +19,8 @@ app.get('/', async (req, res) => {
 app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
 });
+
+app.use(movieRoutes);
 
 app.get('/series/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
@@ -620,32 +623,6 @@ app.get('/users-count', async (req, res) => {
     try {
         const count = await prisma.user.count();
         res.send({ count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.post('/search', async (req, res) => {
-    const { title, page } = req.body;
-
-    try {
-        const movies = await prisma.movie.findMany({
-            where: {
-                title: { contains: title },
-            },
-            include: { genres: { include: { genre: true } } },
-            skip: (page - 1) * 20,
-            take: 20,
-        });
-
-        const count = await prisma.movie.count({
-            where: {
-                title: { contains: title },
-            },
-        });
-
-        res.send({ movies, count });
     } catch (err) {
         // @ts-ignore
         res.status(400).send({ error: err.message });
