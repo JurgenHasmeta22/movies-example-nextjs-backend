@@ -8,10 +8,15 @@ const authController = {
         const { email, password, userName } = req.body;
 
         try {
-            const user: User = await authService.signUp({ email, password, userName });
-            res.send({ user, token: createToken(user.id) });
+            const user: User | null = await authService.signUp({ email, password, userName });
+
+            if (user) {
+                res.send({ user, token: createToken(user.id) });
+            } else {
+                res.status(400).send({ error: 'User already exists' });
+            }
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
 
@@ -19,10 +24,15 @@ const authController = {
         const { email, password } = req.body;
 
         try {
-            const user: User = await authService.login(email, password);
-            res.send({ user, token: createToken(user.id) });
+            const user: User | null = await authService.login(email, password);
+
+            if (user) {
+                res.send({ user, token: createToken(user.id) });
+            } else {
+                res.status(400).send({ error: 'Credentials are wrong' });
+            }
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
 
@@ -30,10 +40,15 @@ const authController = {
         const token: string = req.headers.authorization || '';
 
         try {
-            const user: User = await authService.validate(token);
-            res.send(user);
+            const user: User | null | undefined = await authService.validate(token);
+
+            if (user) {
+                res.send(user);
+            } else {
+                res.status(400).send({ error: 'User not validated' });
+            }
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
 };

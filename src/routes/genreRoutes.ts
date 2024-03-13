@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateGenre } from '../middlewares/validateGenre';
+import { validateMiddleware } from '../middlewares/validateMiddleware';
 import { genreSchemaUpdate, genreSchemaPost } from '../schemas/genreSchema';
 
 const router = express.Router();

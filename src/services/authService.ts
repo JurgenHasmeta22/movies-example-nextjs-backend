@@ -5,18 +5,27 @@ import { Favorite } from '../models/favorite';
 import { getUserFromToken } from '../utils/authUtils';
 
 const authService = {
-    async signUp(userData: { email: string; password: string; userName: string }): Promise<User> {
+    async signUp(userData: { email: string; password: string; userName: string }): Promise<User | null> {
         const { email, password, userName } = userData;
-        const hash = bcrypt.hashSync(password);
-        const user: User = await prisma.user.create({
-            data: { email, password: hash, userName },
+
+        const existingUser: User | null = await prisma.user.findUnique({
+            where: { email, userName },
         });
 
-        user.favMovies = [];
-        return user;
+        if (existingUser) {
+            return null;
+        } else {
+            const hash = bcrypt.hashSync(password);
+            const user: User = await prisma.user.create({
+                data: { email, password: hash, userName },
+            });
+            user.favMovies = [];
+
+            return user;
+        }
     },
 
-    async login(email: string, password: string): Promise<User> {
+    async login(email: string, password: string): Promise<User | null> {
         const user: User | null = await prisma.user.findUnique({
             where: { email },
         });
@@ -37,11 +46,11 @@ const authService = {
 
             return user;
         } else {
-            throw new Error('Invalid email or password');
+            return null;
         }
     },
 
-    async validate(token: string): Promise<User> {
+    async validate(token: string): Promise<User | null | undefined> {
         const user = await getUserFromToken(token);
 
         if (user) {
@@ -54,10 +63,8 @@ const authService = {
                 include: { genres: { include: { genre: true } } },
             });
         } else {
-            throw new Error('User is not authenticated');
+            return null;
         }
-
-        return user;
     },
 };
 
