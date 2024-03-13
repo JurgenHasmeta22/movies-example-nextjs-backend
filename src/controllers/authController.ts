@@ -1,7 +1,6 @@
-// authController.ts
 import { Request, Response } from 'express';
 import authService from '../services/authService';
-import { User } from '../types/user';
+import { User } from '../models/user';
 import { createToken } from '../utils/authUtils';
 
 const authController = {
