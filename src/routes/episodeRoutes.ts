@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateEpisode } from '../middlewares/validateEpisode';
+import {  validateMiddleware } from '../middlewares/validateMiddleware';
 import { episodeSchemaUpdate, episodeSchemaPost } from '../schemas/episodeSchema';
 
 const router = express.Router();
