@@ -20,25 +20,6 @@ app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
 });
 
-function createToken(id: number) {
-    //@ts-ignore
-    const token = jwt.sign({ id: id }, process.env.MY_SECRET, {
-        expiresIn: '3days',
-    });
-    return token;
-}
-
-async function getUserFromToken(token: string) {
-    //@ts-ignore
-    const data = jwt.verify(token, process.env.MY_SECRET);
-    const user = await prisma.user.findUnique({
-        // @ts-ignore
-        where: { id: data.id },
-    });
-
-    return user;
-}
-
 app.post('/sign-up', async (req, res) => {
     const { email, password, userName } = req.body;
 
