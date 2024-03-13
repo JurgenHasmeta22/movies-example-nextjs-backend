@@ -485,7 +485,7 @@ app.get('/usersNoPagination/:id', async (req, res) => {
     const userId = Number(req.params.id);
     const user = await prisma.user.findFirst({
         where: { id: userId },
-        include: { favoriteMovies: { include: { movie: true } } },
+        include: { favMovies: { include: { movie: true } } },
     });
 
     try {

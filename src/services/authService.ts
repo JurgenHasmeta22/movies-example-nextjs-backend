@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../index';
 import { User } from '../models/user';
-import { Favorite } from '../models/favorite';
 import { getUserFromToken } from '../utils/authUtils';
 
 const authService = {
@@ -9,42 +8,43 @@ const authService = {
         const { email, password, userName } = userData;
 
         const existingUser: User | null = await prisma.user.findUnique({
-            where: { email, userName },
+            where: { email },
         });
 
         if (existingUser) {
             return null;
         } else {
             const hash = bcrypt.hashSync(password);
-            const user: User = await prisma.user.create({
+            const user: User | null = await prisma.user.create({
                 data: { email, password: hash, userName },
+                include: { favMovies: true, comments: true },
             });
-            user.favMovies = [];
 
-            return user;
+            if (user) {
+                return user;
+            } else {
+                return null;
+            }
         }
     },
 
     async login(email: string, password: string): Promise<User | null> {
         const user: User | null = await prisma.user.findUnique({
             where: { email },
+            include: {
+                favMovies: { select: { movie: { include: { genres: { select: { genre: true } } } } } },
+                comments: true,
+            },
         });
 
         if (user) {
             const passwordMatches: boolean = bcrypt.compareSync(password, user.password);
 
             if (passwordMatches) {
-                const favorites: Favorite[] = await prisma.favorite.findMany({
-                    where: { userId: user.id },
-                });
-
-                user.favMovies = await prisma.movie.findMany({
-                    where: { id: { in: favorites.map((f: any) => f.movieId) } },
-                    include: { genres: { include: { genre: true } } },
-                });
+                return user;
+            } else {
+                return null;
             }
-
-            return user;
         } else {
             return null;
         }
@@ -54,14 +54,7 @@ const authService = {
         const user = await getUserFromToken(token);
 
         if (user) {
-            const favorites: Favorite[] = await prisma.favorite.findMany({
-                where: { userId: user.id },
-            });
-
-            user.favMovies = await prisma.movie.findMany({
-                where: { id: { in: favorites.map((f: any) => f.movieId) } },
-                include: { genres: { include: { genre: true } } },
-            });
+            return user;
         } else {
             return null;
         }
