@@ -1,14 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
-const prisma = new PrismaClient({
+export const prisma = new PrismaClient({
     log: ['query', 'info', 'warn', 'error'],
 });
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
@@ -18,75 +17,6 @@ app.get('/', async (req, res) => {
 });
 app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
-});
-
-app.post('/sign-up', async (req, res) => {
-    const { email, password, userName } = req.body;
-
-    try {
-        const hash = bcrypt.hashSync(password);
-        const user = await prisma.user.create({
-            data: { email, password: hash, userName },
-        });
-        //@ts-ignore
-        user.favMovies = [];
-        res.send({ user, token: createToken(user.id) });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await prisma.user.findUnique({
-            where: { email },
-        });
-        // @ts-ignore
-        const passwordMatches = bcrypt.compareSync(password, user.password);
-
-        if (user && passwordMatches) {
-            const favorites = await prisma.favorite.findMany({
-                where: { userId: user?.id },
-            });
-            //@ts-ignore
-            user.favMovies = await prisma.movie.findMany({
-                //@ts-ignore
-                where: { id: { in: favorites.map((f: any) => f.movieId) } },
-                include: { genres: { include: { genre: true } } },
-            });
-            res.send({ user, token: createToken(user.id) });
-        } else {
-            throw Error('Boom');
-        }
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/validate', async (req, res) => {
-    const token = req.headers.authorization || '';
-
-    try {
-        const user = await getUserFromToken(token);
-        //favourite movies
-        const favorites = await prisma.favorite.findMany({
-            where: { userId: user?.id },
-        });
-        //@ts-ignore
-        user.favMovies = await prisma.movie.findMany({
-            //@ts-ignore
-            where: { id: { in: favorites.map((f: any) => f.movieId) } },
-            include: { genres: { include: { genre: true } } },
-        });
-        res.send(user);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
 });
 
 app.get('/movies/page/:pagenr', async (req, res) => {
