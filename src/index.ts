@@ -19,100 +19,6 @@ app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
 });
 
-app.get('/movies/page/:pagenr', async (req, res) => {
-    const sortBy = req.query.sortBy;
-    const ascOrDesc = req.query.ascOrDesc;
-    const perPage = Number(req.query.perPage);
-    const page = Number(req.params.pagenr);
-    const titleQuery = req.query.title;
-    const title = String(req.query.title);
-    const filterValue = req.query.filterValue;
-    let filterValueString: number | string = String(req.query.filterValue);
-    const filterNameString = String(req.query.filterName);
-    let filterOperatorString = String(req.query.filterOperator);
-
-    if (filterValueString.match(/\d+/g) != null) {
-        filterValueString = Number(filterValueString);
-    }
-    if (filterOperatorString === '>') {
-        filterOperatorString = 'gt';
-    } else if (filterOperatorString === '=') {
-        filterOperatorString = 'equals';
-    } else if (filterOperatorString === '<') {
-        filterOperatorString = 'lt';
-    }
-
-    let nrToSkip;
-
-    if (perPage) {
-        nrToSkip = (page - 1) * perPage;
-    } else {
-        nrToSkip = (page - 1) * 20;
-    }
-
-    try {
-        let movies;
-        let count;
-
-        if (!titleQuery && !filterValue) {
-            movies = await prisma.movie.findMany({
-                include: { genres: { include: { genre: true } } },
-                orderBy: {
-                    //@ts-ignore
-                    [sortBy]: ascOrDesc,
-                },
-                skip: nrToSkip,
-                take: perPage ? perPage : 20,
-            });
-            count = await prisma.movie.count();
-        } else if (titleQuery && !filterValue) {
-            movies = await prisma.movie.findMany({
-                where: {
-                    title: { contains: title },
-                },
-                include: { genres: { include: { genre: true } } },
-                orderBy: {
-                    //@ts-ignore
-                    [sortBy]: ascOrDesc,
-                },
-                skip: nrToSkip,
-                take: perPage ? perPage : 20,
-            });
-            count = await prisma.movie.count({
-                where: {
-                    title: { contains: title },
-                },
-            });
-        } else if (!titleQuery && filterValue) {
-            movies = await prisma.movie.findMany({
-                where: {
-                    [filterNameString]: {
-                        [filterOperatorString]: filterValueString,
-                    },
-                },
-                include: { genres: { include: { genre: true } } },
-                orderBy: {
-                    //@ts-ignore
-                    [sortBy]: ascOrDesc,
-                },
-                skip: nrToSkip,
-                take: perPage ? perPage : 20,
-            });
-            count = await prisma.movie.count({
-                where: {
-                    [filterNameString]: {
-                        [filterOperatorString]: filterValueString,
-                    },
-                },
-            });
-        }
-        res.send({ rows: movies, count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
 app.get('/series/page/:pagenr', async (req, res) => {
     const sortBy = req.query.sortBy;
     const ascOrDesc = req.query.ascOrDesc;
@@ -497,16 +403,6 @@ app.get('/users', async (req, res) => {
     }
 });
 
-app.get('/movies', async (req, res) => {
-    try {
-        const movies = await prisma.movie.findMany();
-        res.send(movies);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
 app.get('/series', async (req, res) => {
     try {
         const series = await prisma.serie.findMany();
@@ -572,21 +468,6 @@ app.get('/genresNoPagination/:id', async (req, res) => {
     }
 });
 
-app.get('/moviesNoPagination/:id', async (req, res) => {
-    const movieId = Number(req.params.id);
-    const movie = await prisma.movie.findFirst({
-        where: { id: movieId },
-        include: { genres: { include: { genre: true } } },
-    });
-
-    try {
-        res.send(movie);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
 app.get('/usersNoPagination/:id', async (req, res) => {
     const userId = Number(req.params.id);
     const user = await prisma.user.findFirst({
@@ -596,24 +477,6 @@ app.get('/usersNoPagination/:id', async (req, res) => {
 
     try {
         res.send(user);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/movie/:title', async (req, res) => {
-    const title = req.params.title
-        .split('')
-        .map((char) => (char === '-' ? ' ' : char))
-        .join('');
-
-    try {
-        const movie = await prisma.movie.findFirst({
-            where: { title },
-            include: { genres: { include: { genre: true } } },
-        });
-        res.send(movie);
     } catch (err) {
         // @ts-ignore
         res.status(400).send({ error: err.message });
@@ -723,52 +586,6 @@ app.get('/genres/:genre', async (req, res) => {
     }
 });
 
-app.get('/favorites', async (req, res) => {
-    const token = req.headers.authorization || '';
-
-    try {
-        const user = await getUserFromToken(token);
-        const favorites = await prisma.favorite.findMany({
-            where: { userId: user?.id },
-        });
-        res.send(favorites);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/latest', async (req, res) => {
-    const latestMovies = await prisma.movie.findMany({
-        orderBy: {
-            id: 'desc',
-        },
-        take: 20,
-        include: { genres: { include: { genre: true } } },
-    });
-    res.send(latestMovies);
-});
-
-app.get('/movies-count', async (req, res) => {
-    try {
-        const count = await prisma.movie.count();
-        res.send({ count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/movie-count', async (req, res) => {
-    try {
-        const count = await prisma.movie.count();
-        res.send({ count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
 app.get('/series-count', async (req, res) => {
     try {
         const count = await prisma.serie.count();
@@ -829,36 +646,6 @@ app.post('/search', async (req, res) => {
         });
 
         res.send({ movies, count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.post('/favorites', async (req, res) => {
-    const token = req.headers.authorization || '';
-    const { movieId } = req.body;
-
-    try {
-        const user = await getUserFromToken(token);
-
-        const favorite = await prisma.favorite.create({
-            //@ts-ignore
-            data: { userId: user.id, movieId: movieId },
-        });
-
-        const favorites = await prisma.favorite.findMany({
-            where: { userId: user?.id },
-        });
-
-        const generes = await prisma.genre.findMany();
-        //@ts-ignore
-        user.favMovies = await prisma.movie.findMany({
-            where: { id: { in: favorites.map((f) => f.movieId) } },
-            include: { genres: { include: { genre: true } } },
-        });
-
-        res.send(user);
     } catch (err) {
         // @ts-ignore
         res.status(400).send({ error: err.message });
@@ -954,31 +741,6 @@ app.delete('/episodes/:id', async (req, res) => {
             res.send({
                 msg: 'Event deleted succesfully',
                 rows: episodes,
-            });
-        } else {
-            throw Error('You are not authorized, or Event with this Id doesnt exist!');
-        }
-    } catch (err) {
-        //@ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.delete('/movies/:id', async (req, res) => {
-    const idParam = Number(req.params.id);
-
-    try {
-        const movie = await prisma.movie.findUnique({
-            where: { id: idParam },
-        });
-        if (movie) {
-            await prisma.movie.delete({
-                where: { id: idParam },
-            });
-            const movies = await prisma.movie.findMany();
-            res.send({
-                msg: 'Event deleted succesfully',
-                rows: movies,
             });
         } else {
             throw Error('You are not authorized, or Event with this Id doesnt exist!');

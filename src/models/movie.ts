@@ -12,6 +12,6 @@ export interface Movie {
     releaseYear: number;
     description: string;
     views: number;
-    genres: MovieGenre[];
-    userWhoBookmarkedIt: Favorite[];
+    genres?: MovieGenre[];
+    userWhoBookmarkedIt?: Favorite[];
   }
