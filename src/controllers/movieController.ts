@@ -3,42 +3,50 @@ import movieService from '../services/movieService';
 import { getUserFromToken } from '../utils/authUtils';
 
 const movieController = {
-    async getMoviesByPage(req: Request, res: Response) {
-        const { sortBy, ascOrDesc, perPage, pagenr } = req.query;
-        const { title, filterValue, filterName, filterOperator } = req.query;
+    async getMovies(req: Request, res: Response) {
+        const { sortBy, ascOrDesc, page, pageSize, title, filterValue, filterName, filterOperator } = req.query;
+        const expectedParams = [
+            'sortBy',
+            'ascOrDesc',
+            'page',
+            'pageSize',
+            'title',
+            'filterValue',
+            'filterName',
+            'filterOperator',
+        ];
+
+        for (const key in req.query) {
+            if (!expectedParams.includes(key)) {
+                res.status(404).send('Not Found');
+                return;
+            }
+        }
 
         try {
-            const { rows, count } = await movieService.getMoviesByPage({
+            const { rows, count } = await movieService.getMovies({
                 sortBy: sortBy as string,
                 ascOrDesc: ascOrDesc as 'asc' | 'desc',
-                perPage: perPage ? Number(perPage) : 20,
-                page: Number(pagenr),
+                perPage: pageSize ? Number(pageSize) : 20,
+                page: Number(page),
                 title: title as string,
                 filterValue: filterValue ? Number(filterValue) : undefined,
                 filterNameString: filterName as string,
                 filterOperatorString: filterOperator as '>' | '=' | '<',
             });
-
             res.send({ rows, count });
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
-    async getMovies(req: Request, res: Response) {
-        try {
-            const movies = await movieService.getMovies();
-            res.send(movies);
-        } catch (err) {
-            res.status(400).send({ error: err.message });
-        }
-    },
-    async getMovieNoPaginationById(req: Request, res: Response) {
+    async getMovieById(req: Request, res: Response) {
         const movieId = Number(req.params.id);
+
         try {
-            const movie = await movieService.getMovieNoPaginationById(movieId);
+            const movie = await movieService.getMovieById(movieId);
             res.send(movie);
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
     async getMovieByTitle(req: Request, res: Response) {
@@ -50,7 +58,7 @@ const movieController = {
             const movie = await movieService.getMovieByTitle(title);
             res.send(movie);
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
     async getLatestMovies(req: Request, res: Response) {
@@ -58,15 +66,7 @@ const movieController = {
             const latestMovies = await movieService.getLatestMovies();
             res.send(latestMovies);
         } catch (err) {
-            res.status(400).send({ error: err.message });
-        }
-    },
-    async getMoviesCount(req: Request, res: Response) {
-        try {
-            const count = await movieService.getMoviesCount();
-            res.send({ count });
-        } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
     async getFavoritesMoviesByUser(req: Request, res: Response) {
@@ -76,13 +76,13 @@ const movieController = {
             const user = await getUserFromToken(token);
 
             if (user) {
-                const favorites = await movieService.getFavoritesByUserId(user.id);
+                const favorites = await movieService.getFavoritesMoviesByUserId(user.id);
                 res.send(favorites);
             } else {
                 res.status(400).send({ error: 'User not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
     async addFavoriteMovieByUser(req: Request, res: Response) {
@@ -105,30 +105,29 @@ const movieController = {
                 res.status(400).send({ error: 'User not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
-    async deleteMovie(req: Request, res: Response) {
+    async deleteMovieById(req: Request, res: Response) {
         const idParam = Number(req.params.id);
 
         try {
-            const movies = await movieService.deleteMovieById(idParam);
+            const result = await movieService.deleteMovieById(idParam);
             res.send({
-                msg: 'Movie deleted successfully',
-                rows: movies,
+                msg: result === 'Movie deleted successfully' ? result : 'Movie was not deleted',
             });
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
-    async searchMovies(req: Request, res: Response) {
+    async searchMoviesByTitle(req: Request, res: Response) {
         const { title, page } = req.body;
 
         try {
             const { movies, count } = await movieService.searchMoviesByTitle(title, page);
             res.send({ movies, count });
         } catch (err) {
-            res.status(400).send({ error: err.message });
+            res.status(400).send({ error: (err as Error).message });
         }
     },
 };
