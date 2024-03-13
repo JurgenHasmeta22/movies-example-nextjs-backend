@@ -396,106 +396,6 @@ app.get('/users/page/:pagenr', async (req, res) => {
     }
 });
 
-app.get('/genres', async (req, res) => {
-    try {
-        const genres = await prisma.genre.findMany();
-        res.send(genres);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/users', async (req, res) => {
-    try {
-        const users = await prisma.user.findMany();
-        res.send(users);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/series', async (req, res) => {
-    try {
-        const series = await prisma.serie.findMany();
-        res.send(series);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/episodes', async (req, res) => {
-    try {
-        const episodes = await prisma.episode.findMany();
-        res.send(episodes);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/seriesNoPagination/:id', async (req, res) => {
-    const serieId = Number(req.params.id);
-    const serie = await prisma.serie.findFirst({
-        where: { id: serieId },
-        include: { episodes: true },
-    });
-
-    try {
-        res.send(serie);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/episodesNoPagination/:id', async (req, res) => {
-    const episodeId = Number(req.params.id);
-    const episode = await prisma.episode.findFirst({
-        where: { id: episodeId },
-        include: { serie: true },
-    });
-
-    try {
-        res.send(episode);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/genresNoPagination/:id', async (req, res) => {
-    const genreId = Number(req.params.id);
-    const genre = await prisma.genre.findFirst({
-        where: { id: genreId },
-        include: { movies: { include: { movie: true } } },
-    });
-
-    try {
-        res.send(genre);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/usersNoPagination/:id', async (req, res) => {
-    const userId = Number(req.params.id);
-    const user = await prisma.user.findFirst({
-        where: { id: userId },
-        include: { favMovies: { include: { movie: true } } },
-    });
-
-    try {
-        res.send(user);
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
 app.get('/seria/:title', async (req, res) => {
     const title = req.params.title
         .split('')
@@ -533,38 +433,6 @@ app.get('/series/:serie', async (req, res) => {
     }
 });
 
-app.get('/genresAll/:genre', async (req, res) => {
-    const genre = req.params.genre;
-    const genreId = await prisma.genre.findFirst({
-        where: { name: genre },
-    });
-    const count = await prisma.movieGenre.count({
-        where: {
-            genreId: genreId?.id,
-        },
-    });
-
-    try {
-        const movies = await prisma.movie.findMany({
-            where: {
-                genres: {
-                    some: {
-                        genre: {
-                            name: genre,
-                        },
-                    },
-                },
-            },
-            include: { genres: { include: { genre: true } } },
-        });
-
-        res.send({ movies, count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
 app.get('/genres/:genre', async (req, res) => {
     const genre = req.params.genre;
     const page = Number(req.query.page);
@@ -593,46 +461,6 @@ app.get('/genres/:genre', async (req, res) => {
             skip: (page - 1) * 20,
         });
         res.send({ movies, count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/series-count', async (req, res) => {
-    try {
-        const count = await prisma.serie.count();
-        res.send({ count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/episodes-count', async (req, res) => {
-    try {
-        const count = await prisma.episode.count();
-        res.send({ count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/genres-count', async (req, res) => {
-    try {
-        const count = await prisma.genre.count();
-        res.send({ count });
-    } catch (err) {
-        // @ts-ignore
-        res.status(400).send({ error: err.message });
-    }
-});
-
-app.get('/users-count', async (req, res) => {
-    try {
-        const count = await prisma.user.count();
-        res.send({ count });
     } catch (err) {
         // @ts-ignore
         res.status(400).send({ error: err.message });
