@@ -16,6 +16,10 @@ export async function getUserFromToken(token: string) {
     const data = jwt.verify(token, secret);
     const user: User | null = await prisma.user.findUnique({
         where: { id: (data as JwtPayload).id },
+        include: {
+            favMovies: { select: { movie: { include: { genres: { select: { genre: true } } } } } },
+            comments: { select: { content: true } },
+        },
     });
 
     return user;

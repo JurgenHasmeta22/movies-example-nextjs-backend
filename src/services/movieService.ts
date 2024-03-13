@@ -151,10 +151,17 @@ const movieService = {
         const user: User | null = await prisma.user.findUnique({
             where: { id: userId },
             include: {
-                favoriteMovies: {
+                favMovies: {
                     where: { id: { in: favorites.map((f) => f.movieId) } },
-                    // @ts-ignore
-                    include: { genres: { select: { genre: true } } },
+                    select: {
+                        movie: {
+                            include: {
+                                genres: {
+                                    select: { genre: true },
+                                },
+                            },
+                        },
+                    },
                 },
             },
         });

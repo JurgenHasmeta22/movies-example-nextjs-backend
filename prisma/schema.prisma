@@ -11,12 +11,12 @@ datasource db {
 }
 
 model User {
-  id             Int        @id @default(autoincrement())
-  userName       String     @unique
-  email          String     @unique
-  password       String
-  comments       Comment[]
-  favoriteMovies Favorite[]
+  id        Int        @id @default(autoincrement())
+  userName  String
+  email     String     @unique
+  password  String
+  comments  Comment[]
+  favMovies Favorite[]
 }
 
 model Movie {
@@ -27,7 +27,7 @@ model Movie {
   trailerSrc          String       @default("")
   duration            String       @default("")
   ratingImdb          Float        @default(5.0)
-  releaseYear         Int          @default(2020)
+  releaseYear         Int          @default(2023)
   description         String       @default("")
   views               Int          @default(0)
   genres              MovieGenre[]
@@ -35,36 +35,36 @@ model Movie {
 }
 
 model Serie {
-  id                  Int          @id @default(autoincrement())
-  title               String       @default("")
-  photoSrc            String       @default("")
-  releaseYear         Int          @default(2020)
-  ratingImdb          Float        @default(5.0)
-  episodes            Episode[]
-  // seasons             Season[]
+  id          Int       @id @default(autoincrement())
+  title       String    @default("")
+  photoSrc    String    @default("")
+  releaseYear Int       @default(2020)
+  ratingImdb  Float     @default(5.0)
+  episodes    Episode[]
+  seasons     Season[]
 }
 
-// model Season {
-//   id                  Int          @id @default(autoincrement())
-//   title               String       @default("")
-//   photoSrc            String       @default("")
-//   releaseYear         Int          @default(2020)
-//   ratingImdb          Float        @default(5.0)
-//   serieId    Int
-//   serie      Serie     @relation(fields: [serieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-//   episodes             Episode[]
-// }
+model Season {
+  id          Int       @id @default(autoincrement())
+  title       String    @default("")
+  photoSrc    String    @default("")
+  releaseYear Int       @default(2020)
+  ratingImdb  Float     @default(5.0)
+  serieId     Int
+  serie       Serie     @relation(fields: [serieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  episodes    Episode[]
+}
 
 model Episode {
-  id                  Int          @id @default(autoincrement())
-  title               String       @default("")
-  photoSrc            String       @default("")
-  videoSrc            String       @default("")
-  description         String       @default("")
-  serieId    Int
-  serie      Serie    @relation(fields: [serieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  // seasonId    Int
-  // season      Season     @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id          Int    @id @default(autoincrement())
+  title       String @default("")
+  photoSrc    String @default("")
+  videoSrc    String @default("")
+  description String @default("")
+  serieId     Int
+  serie       Serie  @relation(fields: [serieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  seasonId    Int    @default(0)
+  season      Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Comment {
