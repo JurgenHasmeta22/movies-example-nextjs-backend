@@ -251,6 +251,282 @@ export const options = {
                         },
                     },
                 },
+                Genre: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'The auto-generated id of the genre',
+                        },
+                        name: {
+                            type: 'string',
+                            description: 'The name of the genre',
+                        },
+                        movies: {
+                            type: 'array',
+                            items: {
+                                $ref: '#/components/schemas/MovieGenre',
+                            },
+                            description: 'The movies associated with the genre',
+                        },
+                    },
+                    example: {
+                        id: 1,
+                        name: 'Action',
+                        movies: [
+                            {
+                                id: 1,
+                                movieId: 123,
+                                genreId: 1,
+                                movie: {
+                                    id: 123,
+                                    title: 'Terminator',
+                                    director: 'James Cameron',
+                                    genre: 'Action',
+                                    releaseYear: 1984,
+                                    rating: 8.0,
+                                    duration: '107 minutes',
+                                    description: 'A cyborg assassin is sent back in time to kill Sarah Connor.',
+                                    views: 1000000,
+                                },
+                            },
+                        ],
+                    },
+                },
+                GenrePost: {
+                    type: 'object',
+                    required: ['name'],
+                    properties: {
+                        name: {
+                            type: 'string',
+                            description: 'The name of the genre',
+                        },
+                    },
+                    example: {
+                        name: 'Action',
+                    },
+                },
+                GenrePatch: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            description: 'The name of the genre',
+                        },
+                    },
+                    example: {
+                        name: 'Sci-Fi',
+                    },
+                },
+                MovieGenre: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'The auto-generated id of the movie-genre association',
+                        },
+                        movieId: {
+                            type: 'number',
+                            description: 'The id of the movie associated with the genre',
+                        },
+                        genreId: {
+                            type: 'number',
+                            description: 'The id of the genre associated with the movie',
+                        },
+                        movie: {
+                            $ref: '#/components/schemas/Movie',
+                            description: 'The movie associated with the genre',
+                        },
+                        genre: {
+                            $ref: '#/components/schemas/Genre',
+                            description: 'The genre associated with the movie',
+                        },
+                    },
+                    example: {
+                        id: 1,
+                        movieId: 123,
+                        genreId: 1,
+                        movie: {
+                            id: 123,
+                            title: 'Terminator',
+                            director: 'James Cameron',
+                            genre: 'Action',
+                            releaseYear: 1984,
+                            rating: 8.0,
+                            duration: '107 minutes',
+                            description: 'A cyborg assassin is sent back in time to kill Sarah Connor.',
+                            views: 1000000,
+                        },
+                        genre: {
+                            id: 1,
+                            name: 'Action',
+                        },
+                    },
+                },
+                Serie: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'The auto-generated id of the series',
+                        },
+                        title: {
+                            type: 'string',
+                            description: 'The title of the series',
+                        },
+                        photoSrc: {
+                            type: 'string',
+                            description: 'The photo source of the series',
+                        },
+                        releaseYear: {
+                            type: 'number',
+                            description: 'The release year of the series',
+                        },
+                        ratingImdb: {
+                            type: 'number',
+                            description: 'The IMDb rating of the series',
+                        },
+                        episodes: {
+                            type: 'array',
+                            items: {
+                                $ref: '#/components/schemas/Episode',
+                            },
+                            description: 'The episodes of the series',
+                        },
+                    },
+                    example: {
+                        id: 1,
+                        title: 'Game of Thrones',
+                        photoSrc: 'https://example.com/game-of-thrones.jpg',
+                        releaseYear: 2011,
+                        ratingImdb: 9.3,
+                        episodes: [
+                            {
+                                id: 1,
+                                title: 'Winter Is Coming',
+                                duration: '60 minutes',
+                            },
+                            {
+                                id: 2,
+                                title: 'The Kingsroad',
+                                duration: '58 minutes',
+                            },
+                            // Other episodes...
+                        ],
+                    },
+                },
+                SeriePost: {
+                    type: 'object',
+                    required: ['title', 'photoSrc', 'releaseYear', 'ratingImdb'],
+                    properties: {
+                        title: {
+                            type: 'string',
+                            description: 'The title of the series',
+                        },
+                        photoSrc: {
+                            type: 'string',
+                            description: 'The photo source of the series',
+                        },
+                        releaseYear: {
+                            type: 'number',
+                            description: 'The release year of the series',
+                        },
+                        ratingImdb: {
+                            type: 'number',
+                            description: 'The IMDb rating of the series',
+                        },
+                    },
+                    example: {
+                        title: 'Game of Thrones',
+                        photoSrc: 'https://example.com/game-of-thrones.jpg',
+                        releaseYear: 2011,
+                        ratingImdb: 9.3,
+                    },
+                },
+                SeriePatch: {
+                    type: 'object',
+                    properties: {
+                        title: {
+                            type: 'string',
+                            description: 'The title of the series',
+                        },
+                        photoSrc: {
+                            type: 'string',
+                            description: 'The photo source of the series',
+                        },
+                        releaseYear: {
+                            type: 'number',
+                            description: 'The release year of the series',
+                        },
+                        ratingImdb: {
+                            type: 'number',
+                            description: 'The IMDb rating of the series',
+                        },
+                    },
+                    example: {
+                        title: 'Game of Thrones',
+                        photoSrc: 'https://example.com/game-of-thrones.jpg',
+                        releaseYear: 2011,
+                        ratingImdb: 9.3,
+                    },
+                },
+                Episode: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'The auto-generated id of the episode',
+                        },
+                        title: {
+                            type: 'string',
+                            description: 'The title of the episode',
+                        },
+                        duration: {
+                            type: 'string',
+                            description: 'The duration of the episode',
+                        },
+                    },
+                    example: {
+                        id: 1,
+                        title: 'Winter Is Coming',
+                        duration: '60 minutes',
+                    },
+                },
+                EpisodePost: {
+                    type: 'object',
+                    required: ['title', 'duration'],
+                    properties: {
+                        title: {
+                            type: 'string',
+                            description: 'The title of the episode',
+                        },
+                        duration: {
+                            type: 'string',
+                            description: 'The duration of the episode',
+                        },
+                    },
+                    example: {
+                        title: 'Winter Is Coming',
+                        duration: '60 minutes',
+                    },
+                },
+                EpisodePatch: {
+                    type: 'object',
+                    properties: {
+                        title: {
+                            type: 'string',
+                            description: 'The title of the episode',
+                        },
+                        duration: {
+                            type: 'string',
+                            description: 'The duration of the episode',
+                        },
+                    },
+                    example: {
+                        title: 'Winter Is Coming',
+                        duration: '60 minutes',
+                    },
+                },
             },
         },
         tags: [
@@ -261,6 +537,22 @@ export const options = {
             {
                 name: 'Authentication',
                 description: 'The authentication managing API',
+            },
+            {
+                name: 'Users',
+                description: 'The users managing API',
+            },
+            {
+                name: 'Genres',
+                description: 'The genres managing API',
+            },
+            {
+                name: 'Episodes',
+                description: 'The episodes managing API',
+            },
+            {
+                name: 'Series',
+                description: 'The series managing API',
             },
         ],
         paths: {
