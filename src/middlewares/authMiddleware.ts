@@ -7,7 +7,13 @@ interface CustomRequest extends Request {
 }
 
 export async function authMiddleware(req: CustomRequest, res: Response, next: NextFunction) {
-    const token = req.headers.authorization!;
+    const bearerHeader = req.headers['authorization'];
+
+    if (!bearerHeader || typeof bearerHeader !== 'string') {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const token = bearerHeader.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
