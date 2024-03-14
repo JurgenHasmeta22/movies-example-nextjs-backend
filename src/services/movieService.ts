@@ -37,15 +37,15 @@ const movieService = {
 
         if (title) filters.title = { contains: title };
 
-        if (filterValue !== undefined && filterNameString) {
+        if (filterValue !== undefined && filterNameString && filterOperatorString) {
             const operator = filterOperatorString === '>' ? 'gt' : filterOperatorString === '<' ? 'lt' : 'equals';
             filters[filterNameString] = { [operator]: filterValue };
         }
 
         const orderByObject: any = {};
 
-        if (sortBy) {
-            orderByObject[sortBy] = ascOrDesc || 'asc';
+        if (sortBy && ascOrDesc) {
+            orderByObject[sortBy] = ascOrDesc;
         }
 
         const movies = await prisma.movie.findMany({
