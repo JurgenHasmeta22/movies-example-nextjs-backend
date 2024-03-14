@@ -8,10 +8,31 @@ import serieRoutes from './routes/serieRoutes';
 import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
 import 'dotenv/config';
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 
 export const prisma = new PrismaClient({
     log: ['query', 'info', 'warn', 'error'],
 });
+
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Movies API',
+            version: '1.0.0',
+            description: 'Movies API',
+        },
+        servers: [
+            {
+                url: 'http://localhost:4000',
+            },
+        ],
+    },
+    apis: ['./src/routes/*.ts'],
+};
+
+const specs = swaggerJsDoc(options);
 const app = express();
 
 app.use(cors());
@@ -24,6 +45,8 @@ app.get('/', async (req, res) => {
 app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
 });
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 app.use(authRoutes);
 app.use(movieRoutes);
