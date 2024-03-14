@@ -52,7 +52,12 @@ const movieController = {
 
         try {
             const movie = await movieService.getMovieById(movieId);
-            res.send(movie);
+
+            if (movie) {
+                res.send(movie);
+            } else {
+                res.status(400).send({ error: 'Movie not found' });
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -73,22 +78,6 @@ const movieController = {
         try {
             const latestMovies = await movieService.getLatestMovies();
             res.send(latestMovies);
-        } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
-        }
-    },
-    async getFavoritesMoviesByUser(req: Request, res: Response) {
-        const token = req.headers.authorization || '';
-
-        try {
-            const user = await getUserFromToken(token);
-
-            if (user) {
-                const favorites = await movieService.getFavoritesMoviesByUserId(user.id);
-                res.send(favorites);
-            } else {
-                res.status(400).send({ error: 'User not found' });
-            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -145,17 +134,17 @@ const movieController = {
         try {
             const result = await movieService.deleteMovieById(idParam);
             res.send({
-                msg: result === 'Movie deleted' ? result : 'Movie was not deleted',
+                msg: result === 'Movie deleted successfully' ? result : 'Movie was not deleted',
             });
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
     },
     async searchMoviesByTitle(req: Request, res: Response) {
-        const { title, page } = req.body;
+        const { title, page } = req.query;
 
         try {
-            const { movies, count } = await movieService.searchMoviesByTitle(title, page);
+            const { movies, count } = await movieService.searchMoviesByTitle(String(title), Number(page));
             res.send({ movies, count });
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
