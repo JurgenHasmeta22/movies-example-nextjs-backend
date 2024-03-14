@@ -47,9 +47,9 @@ const movieService = {
         let nrToSkip: number;
 
         if (perPage) {
-            nrToSkip = (page - 1) * perPage;
+            nrToSkip = page ? (page - 1) * perPage : 0;
         } else {
-            nrToSkip = (page - 1) * 20;
+            nrToSkip = page ? (page - 1) * 20 : 0;
         }
 
         let movies: Movie[] = [];
@@ -133,12 +133,6 @@ const movieService = {
             include: { genres: { select: { genre: true } } },
         });
     },
-    async getFavoritesMoviesByUserId(userId: number): Promise<Favorite[]> {
-        return await prisma.favorite.findMany({
-            where: { userId },
-            select: { id: true, movie: true, userId: true },
-        });
-    },
     async addFavoriteMovieByUserId(userId: number, movieId: number): Promise<User | null> {
         await prisma.favorite.create({
             data: { userId, movieId },
@@ -220,15 +214,16 @@ const movieService = {
         }
     },
     async searchMoviesByTitle(title: string, page: number): Promise<{ movies: Movie[]; count: number }> {
-        const movies = await prisma.movie.findMany({
+        const query = {
             where: {
                 title: { contains: title },
             },
             include: { genres: { select: { genre: true } } },
-            skip: (page - 1) * 20,
+            skip: page ? (page - 1) * 20 : 0,
             take: 20,
-        });
+        };
 
+        const movies = await prisma.movie.findMany(query);
         const count = await prisma.movie.count({
             where: {
                 title: { contains: title },
