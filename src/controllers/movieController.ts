@@ -11,25 +11,7 @@ interface CustomRequest extends Request {
 const movieController = {
     async getMovies(req: Request, res: Response) {
         const { sortBy, ascOrDesc, page, pageSize, title, filterValue, filterName, filterOperator } = req.query;
-        const expectedParams = [
-            'sortBy',
-            'ascOrDesc',
-            'page',
-            'pageSize',
-            'title',
-            'filterValue',
-            'filterName',
-            'filterOperator',
-        ];
-
-        for (const key in req.query) {
-            if (!expectedParams.includes(key)) {
-                res.status(404).send('Not Found');
-
-                return;
-            }
-        }
-
+        
         try {
             const { rows, count } = await movieService.getMovies({
                 sortBy: sortBy as string,

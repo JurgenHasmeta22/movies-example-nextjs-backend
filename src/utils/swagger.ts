@@ -273,6 +273,73 @@ export const options = {
                             bearerAuth: [],
                         },
                     ],
+                    parameters: [
+                        {
+                            name: 'sortBy',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Sort field for movies (e.g., title, releaseYear)',
+                        },
+                        {
+                            name: 'ascOrDesc',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                                enum: ['asc', 'desc'],
+                            },
+                            description: 'Sort order for movies (ascending or descending)',
+                        },
+                        {
+                            name: 'page',
+                            in: 'query',
+                            schema: {
+                                type: 'integer',
+                            },
+                            description: 'Page number for pagination',
+                        },
+                        {
+                            name: 'pageSize',
+                            in: 'query',
+                            schema: {
+                                type: 'integer',
+                            },
+                            description: 'Number of items per page for pagination',
+                        },
+                        {
+                            name: 'title',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Search movies by title',
+                        },
+                        {
+                            name: 'filterValue',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Value to filter movies',
+                        },
+                        {
+                            name: 'filterName',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Name of the field to filter movies',
+                        },
+                        {
+                            name: 'filterOperator',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Operator to use for filtering (e.g., eq, gt, lt)',
+                        },
+                    ],
                     responses: {
                         '200': {
                             description: 'The list of the movies',
