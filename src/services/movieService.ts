@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../index';
 import { Favorite } from '../models/favorite';
 import { Movie, MoviePatch, MoviePost } from '../models/movie';
@@ -30,85 +31,32 @@ const movieService = {
         filterNameString,
         filterOperatorString,
     }: MovieServiceParams): Promise<MovieServiceResponse> {
-        let filterValueString: number | string = String(filterValue);
+        const filters: any = {};
+        const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
+        const take = perPage || 20;
 
-        if (typeof filterValueString === 'string' && filterValueString.match(/\d+/g) != null) {
-            filterValueString = Number(filterValueString);
+        if (title) filters.title = { contains: title };
+
+        if (filterValue !== undefined && filterNameString) {
+            const operator = filterOperatorString === '>' ? 'gt' : filterOperatorString === '<' ? 'lt' : 'equals';
+            filters[filterNameString] = { [operator]: filterValue };
         }
 
-        if (filterOperatorString === '>') {
-            filterOperatorString = 'gt';
-        } else if (filterOperatorString === '=') {
-            filterOperatorString = 'equals';
-        } else if (filterOperatorString === '<') {
-            filterOperatorString = 'lt';
+        const orderByObject: any = {};
+
+        if (sortBy) {
+            orderByObject[sortBy] = ascOrDesc || 'asc';
         }
 
-        let nrToSkip: number;
+        const movies = await prisma.movie.findMany({
+            where: filters,
+            include: { genres: { select: { genre: true } } },
+            orderBy: orderByObject,
+            skip,
+            take,
+        });
 
-        if (perPage) {
-            nrToSkip = page ? (page - 1) * perPage : 0;
-        } else {
-            nrToSkip = page ? (page - 1) * 20 : 0;
-        }
-
-        let movies: Movie[] = [];
-        let count: number = 0;
-
-        if (!title && !filterValue) {
-            movies = await prisma.movie.findMany({
-                include: { genres: { select: { genre: true } } },
-                orderBy: {
-                    [sortBy]: ascOrDesc,
-                },
-                skip: nrToSkip,
-                take: perPage ? perPage : 20,
-            });
-
-            count = await prisma.movie.count();
-        } else if (title && !filterValue) {
-            movies = await prisma.movie.findMany({
-                where: {
-                    title: { contains: title },
-                },
-                include: { genres: { select: { genre: true } } },
-                orderBy: {
-                    [sortBy]: ascOrDesc,
-                },
-                skip: nrToSkip,
-                take: perPage ? perPage : 20,
-            });
-
-            count = await prisma.movie.count({
-                where: {
-                    title: { contains: title },
-                },
-            });
-        } else if (!title && filterValue) {
-            movies = await prisma.movie.findMany({
-                where: {
-                    [filterNameString && filterNameString.length > 0 ? filterNameString : '']: {
-                        [filterOperatorString && filterOperatorString.length > 0 ? filterOperatorString : 'equals']:
-                            filterValueString,
-                    },
-                },
-                include: { genres: { select: { genre: true } } },
-                orderBy: {
-                    [sortBy]: ascOrDesc,
-                },
-                skip: nrToSkip,
-                take: perPage ? perPage : 20,
-            });
-
-            count = await prisma.movie.count({
-                where: {
-                    [filterNameString && filterNameString.length > 0 ? filterNameString : '']: {
-                        [filterOperatorString && filterOperatorString.length > 0 ? filterOperatorString : 'equals']:
-                            filterValueString,
-                    },
-                },
-            });
-        }
+        const count = await prisma.movie.count({ where: filters });
 
         return { rows: movies, count };
     },
