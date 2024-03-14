@@ -144,15 +144,10 @@ const movieService = {
             data: { userId, movieId },
         });
 
-        const favorites = await prisma.favorite.findMany({
-            where: { userId },
-        });
-
         const user: User | null = await prisma.user.findUnique({
             where: { id: userId },
             include: {
                 favMovies: {
-                    where: { id: { in: favorites.map((f) => f.movieId) } },
                     select: {
                         movie: {
                             include: {
@@ -181,7 +176,7 @@ const movieService = {
             const movieUpdated = await prisma.movie.update({
                 where: { id: Number(id) },
                 data: movieParam,
-                include: { genres: { select: { genre: { select: { name: true } } } } },
+                include: { genres: { select: { genre: true } } },
             });
 
             if (movieUpdated) {
