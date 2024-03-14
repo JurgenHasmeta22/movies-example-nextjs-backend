@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import movieService from '../services/movieService';
 import { getUserFromToken } from '../utils/authUtils';
 import { Movie } from '../models/movie';
+import { User } from '../models/user';
+
+interface CustomRequest extends Request {
+    user?: User;
+}
 
 const movieController = {
     async getMovies(req: Request, res: Response) {
@@ -89,24 +94,15 @@ const movieController = {
         }
     },
     async addFavoriteMovieByUser(req: Request, res: Response) {
-        const token = req.headers.authorization || '';
-        const { movieId } = req.body;
+        const { movieId, userId } = req.body;
 
         try {
-            const user = await getUserFromToken(token);
+            const updatedUser = await movieService.addFavoriteMovieByUserId(userId, movieId);
 
-            if (user) {
-                const updatedUser = await movieService.addFavoriteMovieByUserId(user.id, movieId);
-
-                if (updatedUser) {
-                    res.send(updatedUser);
-                } else {
-                    res.send({ error: 'User not found' });
-                }
-
+            if (updatedUser) {
                 res.send(updatedUser);
             } else {
-                res.status(400).send({ error: 'User not found' });
+                res.send({ error: 'Favorites movies not updated' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
