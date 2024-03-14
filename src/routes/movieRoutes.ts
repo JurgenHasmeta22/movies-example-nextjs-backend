@@ -15,16 +15,6 @@ router.use(authMiddleware);
  *   schemas:
  *     Movie:
  *       type: object
- *       required:
- *         - title
- *         - videoSrc
- *         - photoSrc
- *         - trailerSrc
- *         - duration
- *         - ratingImdb
- *         - releaseYear
- *         - description
- *         - views
  *       properties:
  *         id:
  *           type: number
@@ -56,6 +46,11 @@ router.use(authMiddleware);
  *         views:
  *           type: string
  *           description: The views of the movie
+ *         genres:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Genre'
+ *           description: The genres of the movie
  *       example:
  *         id: abc123
  *         title: Inception
@@ -66,6 +61,11 @@ router.use(authMiddleware);
  *         duration: 148 minutes
  *         description: A thief who enters the dreams of others to steal their secrets.
  *         views: 1000000
+ *         genres:
+ *           - id: 1
+ *             name: Science Fiction
+ *           - id: 2
+ *             name: Action
  *     MoviePost:
  *       type: object
  *       required:
@@ -118,9 +118,6 @@ router.use(authMiddleware);
  *     MoviePatch:
  *       type: object
  *       properties:
- *         id:
- *           type: number
- *           description: The auto-generated id of the movie
  *         title:
  *           type: string
  *           description: The movie title
@@ -149,10 +146,9 @@ router.use(authMiddleware);
  *           type: string
  *           description: The views of the movie
  *       example:
- *         id: abc123
  *         title: Inception
  *         director: Christopher Nolan
- *         genre: Science Fiction
+ *         genre: Science
  *         releaseYear: 2010
  *         rating: 8.8
  *         duration: 148 minutes
@@ -309,7 +305,7 @@ router.delete('/movies/:id', movieController.deleteMovieById);
  *       content:
  *        application/json:
  *          schema:
- *           $ref: '#/components/schemas/Movie'
+ *           $ref: '#/components/schemas/MoviePatch'
  *   responses:
  *     200:
  *       description: The movie was updated
@@ -335,7 +331,7 @@ router.patch('/movies/:id', movieSchemaUpdate, validateMiddleware, movieControll
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Movie'
+ *             $ref: '#/components/schemas/MoviePost'
  *     responses:
  *       200:
  *         description: The movie was successfully created
@@ -388,14 +384,14 @@ router.post('/favoritesMovies', favoriteSchema, validateMiddleware, movieControl
  *       content:
  *        application/json:
  *          schema:
- *           $ref: '#/components/schemas/Movie'
+ *           $ref: '#/components/schemas/MoviePost'
  *   responses:
  *     200:
  *       description: The movie was updated
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MoviePut'
+ *             $ref: '#/components/schemas/MoviePost'
  *     404:
  *       description: The movie was not found
  *     500:
