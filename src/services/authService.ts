@@ -49,16 +49,6 @@ const authService = {
             return null;
         }
     },
-
-    async validate(token: string): Promise<User | null | undefined> {
-        const user = await getUserFromToken(token);
-
-        if (user) {
-            return user;
-        } else {
-            return null;
-        }
-    },
 };
 
 export default authService;

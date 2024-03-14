@@ -3,6 +3,10 @@ import authService from '../services/authService';
 import { User } from '../models/user';
 import { createToken } from '../utils/authUtils';
 
+interface CustomRequest extends Request {
+    user?: User;
+}
+
 const authController = {
     async signUp(req: Request, res: Response) {
         const { email, password, userName } = req.body;
@@ -19,7 +23,6 @@ const authController = {
             res.status(400).send({ error: (err as Error).message });
         }
     },
-
     async login(req: Request, res: Response) {
         const { email, password } = req.body;
 
@@ -35,15 +38,10 @@ const authController = {
             res.status(400).send({ error: (err as Error).message });
         }
     },
-
-    async validate(req: Request, res: Response) {
-        const token: string = req.headers.authorization || '';
-
+    async validate(req: CustomRequest, res: Response) {
         try {
-            const user: User | null | undefined = await authService.validate(token);
-
-            if (user) {
-                res.send(user);
+            if (req.user) {
+                res.send(req.user);
             } else {
                 res.status(400).send({ error: 'User not validated' });
             }

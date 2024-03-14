@@ -1,7 +1,7 @@
 import { MovieGenre } from "./movieGenre";
 
 export interface Genre {
-  id: number;
+  id?: number;
   name: string;
   movies?: MovieGenre[];
 }
