@@ -2,9 +2,11 @@ import express from 'express';
 import movieController from '../controllers/movieController';
 import { validateMiddleware } from '../middlewares/validateMiddleware';
 import { movieSchemaUpdate, movieSchemaPost } from '../schemas/movieSchema';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
+router.use(authMiddleware);
 router.get('/movies', movieController.getMovies);
 router.get('/movies/:id', movieController.getMovieById);
 router.get('/movie/:title', movieController.getMovieByTitle);

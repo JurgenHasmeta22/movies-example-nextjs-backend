@@ -181,7 +181,7 @@ const movieService = {
             const movieUpdated = await prisma.movie.update({
                 where: { id: Number(id) },
                 data: movieParam,
-                include: { genres: { select: { genre: true } } },
+                include: { genres: { select: { genre: { select: { name: true } } } } },
             });
 
             if (movieUpdated) {

@@ -20,6 +20,7 @@ const movieController = {
         for (const key in req.query) {
             if (!expectedParams.includes(key)) {
                 res.status(404).send('Not Found');
+
                 return;
             }
         }
@@ -35,6 +36,7 @@ const movieController = {
                 filterNameString: filterName as string,
                 filterOperatorString: filterOperator as '>' | '=' | '<',
             });
+
             res.send({ rows, count });
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
@@ -101,6 +103,7 @@ const movieController = {
                 } else {
                     res.send({ error: 'User not found' });
                 }
+
                 res.send(updatedUser);
             } else {
                 res.status(400).send({ error: 'User not found' });
