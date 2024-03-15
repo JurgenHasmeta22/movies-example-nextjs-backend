@@ -1,5 +1,5 @@
-import { Movie } from './movie';
-import { Genre } from './genre';
+import { Movie } from './movie.model';
+import { Genre } from './genre.model';
 
 export interface MovieGenre {
     id?: number;

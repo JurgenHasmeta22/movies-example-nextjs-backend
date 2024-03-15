@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import authService from '../services/authService';
-import { User } from '../models/user';
+import authService from '../services/auth.service';
+import { User } from '../models/user.model';
 import { createToken } from '../utils/authUtils';
 
 interface CustomRequest extends Request {

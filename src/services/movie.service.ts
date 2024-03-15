@@ -1,8 +1,6 @@
-import { Prisma } from '@prisma/client';
 import { prisma } from '../app';
-import { Favorite } from '../models/favorite';
-import { Movie, MoviePatch, MoviePost } from '../models/movie';
-import { User } from '../models/user';
+import { Movie, MoviePatch, MoviePost } from '../models/movie.model';
+import { User } from '../models/user.model';
 
 interface MovieServiceParams {
     sortBy: string;

@@ -2,16 +2,16 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { options } from './utils/swagger';
-import movieRoutes from './routes/movieRoutes';
-import episodeRoutes from './routes/episodeRoutes';
-import genreRoute from './routes/genreRoutes';
-import serieRoutes from './routes/serieRoutes';
-import userRoutes from './routes/userRoutes';
-import authRoutes from './routes/authRoutes';
+import movieRoutes from './routes/movie.routes';
+import episodeRoutes from './routes/episode.routes';
+import genreRoutes from './routes/genre.routes';
+import serieRoutes from './routes/serie.routes';
+import userRoutes from './routes/user.routes';
+import authRoutes from './routes/auth.routes';
 import { XMLParser } from 'fast-xml-parser';
 import fetch from 'node-fetch';
 import { parse } from 'node-html-parser';
-import { Movie } from './models/movie';
+import { Movie } from './models/movie.model';
 import https from 'https';
 import fs from 'fs';
 import 'dotenv/config';
@@ -28,17 +28,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+
 app.get('/', async (req, res) => {
     res.send('Server Up and Running');
 });
 app.listen(4000, () => {
     console.log(`Server up: http://localhost:4000`);
 });
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 app.use(authRoutes);
 app.use(movieRoutes);
 app.use(serieRoutes);
-app.use(genreRoute);
+app.use(genreRoutes);
 app.use(episodeRoutes);
 app.use(userRoutes);
 
@@ -64,7 +66,7 @@ app.get('/filma24-new', async (req, res) => {
     res.send('ok');
 });
 
-app.get('/single-movie', async (req, res) => {
+app.get('/single-movie.model', async (req, res) => {
     const resq = await fetch('https://www.filma24.so/post-sitemap9.xml');
     const htmlText = await resq.text();
     const parser = new XMLParser();

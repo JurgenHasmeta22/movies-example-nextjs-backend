@@ -1,17 +1,11 @@
 import { Request, Response } from 'express';
-import movieService from '../services/movieService';
-import { getUserFromToken } from '../utils/authUtils';
-import { Movie } from '../models/movie';
-import { User } from '../models/user';
-
-interface CustomRequest extends Request {
-    user?: User;
-}
+import movieService from '../services/movie.service';
+import { Movie } from '../models/movie.model';
 
 const movieController = {
     async getMovies(req: Request, res: Response) {
         const { sortBy, ascOrDesc, page, pageSize, title, filterValue, filterName, filterOperator } = req.query;
-        
+
         try {
             const { rows, count } = await movieService.getMovies({
                 sortBy: sortBy as string,

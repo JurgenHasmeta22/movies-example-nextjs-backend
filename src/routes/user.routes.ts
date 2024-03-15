@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateMiddleware } from '../middlewares/validateMiddleware';
+import { validate.middleware } from '../middlewares/validate.middleware';
 import { userSchemaUpdate, userSchemaPost } from '../schemas/user.schema';
 
 const router = express.Router();
