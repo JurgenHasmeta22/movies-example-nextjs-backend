@@ -8,17 +8,17 @@ const movieController = {
 
         try {
             const { rows, count } = await movieService.getMovies({
-                sortBy: sortBy! as string,
-                ascOrDesc: ascOrDesc! as 'asc' | 'desc',
+                sortBy: sortBy as string,
+                ascOrDesc: ascOrDesc as 'asc' | 'desc',
                 perPage: pageSize ? Number(pageSize) : 20,
-                page: Number(page!),
-                title: title! as string,
+                page: Number(page),
+                title: title as string,
                 filterValue: filterValue ? Number(filterValue) : undefined,
-                filterNameString: filterName! as string,
-                filterOperatorString: filterOperator! as '>' | '=' | '<',
+                filterNameString: filterName as string,
+                filterOperatorString: filterOperator as '>' | '=' | '<',
             });
 
-            res.status(200).send({ rows, count });
+            res.status(200).send({ movies: rows, count });
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -32,7 +32,7 @@ const movieController = {
             if (movie) {
                 res.status(200).send(movie);
             } else {
-                res.status(400).send({ error: 'Movie not found' });
+                res.status(404).send({ error: 'Movie not found' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
@@ -83,7 +83,7 @@ const movieController = {
             if (movie) {
                 res.status(200).send(movie);
             } else {
-                res.status(400).send({ error: 'Movie not updated' });
+                res.status(404).send({ error: 'Movie not found' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
