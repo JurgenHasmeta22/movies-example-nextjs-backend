@@ -7,5 +7,5 @@ export interface Episode {
     videoSrc: string;
     description: string;
     serieId: number;
-    serie: Serie;
+    serie?: Serie;
 }

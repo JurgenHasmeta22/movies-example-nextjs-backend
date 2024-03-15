@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get('/genres', genreController.getGenres);
+router.get('/genres', genreQuerySchema, validateMiddleware, genreController.getGenres);
 router.get('/genres/:id', genreController.getGenreById);
 router.get('/genres/:name', genreController.getGenreByName);
 router.delete('/genres/:id', genreController.deleteGenreById);
