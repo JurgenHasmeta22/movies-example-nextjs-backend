@@ -12,7 +12,10 @@ describe('Movie Routes', () => {
             const pageSize = 10;
             const response = await request(app)
                 .get('/movies')
-                .set('Authorization', `Bearer 096hjfk`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
                 .query({ sortBy, ascOrDesc, filterName, filterValue, page, pageSize });
 
             expect(response.status).toBe(200);
@@ -40,26 +43,22 @@ describe('Movie Routes', () => {
             const pageSize = 10;
             const response = await request(app)
                 .get('/movies')
-                .set('Authorization', `Bearer 096hjfk`)
                 .query({ sortBy, ascOrDesc, filterName, filterValue, page, pageSize });
-
             expect(response.status).toBe(401);
         });
     });
 
     describe('GET /movies/:id', () => {
         test('Should return status 200 and the requested movie', async () => {
-            const movieId = 5;
-            const response = await request(app).get(`/movies/${movieId}`).set('Authorization', `Bearer jokf`);
-
+            const movieId = 324;
+            const response = await request(app).get(`/movies/${movieId}`);
             expect(response.status).toBe(200);
             expect(response.body.id).toBe(movieId);
         });
 
         test('Should return 401 status code if not authorized', async () => {
-            const movieId = 5;
-            const response = await request(app).get(`/movies/${movieId}`).set('Authorization', `Bearer jokf`);
-
+            const movieId = 324;
+            const response = await request(app).get(`/movies/${movieId}`);
             expect(response.status).toBe(401);
         });
     });
@@ -70,7 +69,6 @@ describe('Movie Routes', () => {
             const response = await request(app)
                 .get(`/movies/${encodeURIComponent(movieTitle)}`)
                 .set('Authorization', `Bearer jokf`);
-
             expect(response.status).toBe(200);
             expect(response.body.title).toBe(movieTitle);
         });
@@ -78,24 +76,39 @@ describe('Movie Routes', () => {
         test('Should return 401 status code if not authorized', async () => {
             const movieTitle = 'Goku';
             const response = await request(app).get(`/movies/${encodeURIComponent(movieTitle)}`);
-
             expect(response.status).toBe(401);
         });
     });
 
     describe('DELETE /movies/:id', () => {
         test('Should return status 200 and a success message', async () => {
-            const movieId = 320;
-            const response = await request(app).delete(`/movies/${movieId}`).set('Authorization', `Bearer jokf`);
+            const movieId = 323;
+            const response = await request(app)
+                .delete(`/movies/${movieId}`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                );
 
             expect(response.status).toBe(200);
-            expect(response.body.msg).toBe('Movie deleted successfully');
+            expect(response.body.msg).toBe('Movie was deleted');
+        });
+
+        test('Should return status 400 and a error message', async () => {
+            const movieId = 323;
+            const response = await request(app)
+                .delete(`/movies/${movieId}`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                );
+            expect(response.status).toBe(200);
+            expect(response.body.msg).toBe('Movie was not deleted');
         });
 
         test('Should return 401 status code if not authorized', async () => {
-            const movieId = 320;
+            const movieId = 323;
             const response = await request(app).delete(`/movies/${movieId}`);
-
             expect(response.status).toBe(401);
         });
     });
@@ -115,7 +128,10 @@ describe('Movie Routes', () => {
             };
             const response = await request(app)
                 .post('/movies')
-                .set('Authorization', `Bearer jokf`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
                 .send(validMovieData);
 
             expect(response.status).toBe(200);
@@ -126,9 +142,11 @@ describe('Movie Routes', () => {
             const invalidMovieData = {};
             const response = await request(app)
                 .post('/movies')
-                .set('Authorization', `Bearer jokf`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
                 .send(invalidMovieData);
-
             expect(response.status).toBe(400);
         });
 
@@ -146,9 +164,11 @@ describe('Movie Routes', () => {
             };
             const response = await request(app)
                 .post('/movies')
-                .set('Authorization', `Bearer jokf`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
                 .send(invalidMovieData);
-
             expect(response.status).toBe(400);
         });
 
@@ -164,87 +184,208 @@ describe('Movie Routes', () => {
                 description: 'A thief who enters the dreams of others to steal their secrets.',
                 views: 1000000,
             };
+            const response = await request(app).post('/movies').send(validMovieData);
+            expect(response.status).toBe(401);
+        });
+    });
+
+    describe('PUT /movies/:id', () => {
+        test('should return status 200 and updated movie details', async () => {
+            const movieId = 324;
+            const updatedMovieData = {
+                title: 'Updated Movie Title',
+                videoSrc: 'Updated video source',
+                photoSrc: 'Updated photo source',
+                trailerSrc: 'Updated trailer source',
+                duration: 'Updated duration',
+                ratingImdb: 9.5,
+                releaseYear: 2022,
+                description: 'Updated movie description',
+                views: 1000,
+            };
+
             const response = await request(app)
-                .post('/movies')
-                .set('Authorization', `Bearer jokf`)
-                .send(validMovieData);
+                .put(`/movies/${movieId}`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
+                .send(updatedMovieData);
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('title', updatedMovieData.title);
+            expect(response.body).toHaveProperty('videoSrc', updatedMovieData.videoSrc);
+            expect(response.body).toHaveProperty('photoSrc', updatedMovieData.photoSrc);
+            expect(response.body).toHaveProperty('trailerSrc', updatedMovieData.trailerSrc);
+            expect(response.body).toHaveProperty('duration', updatedMovieData.duration);
+            expect(response.body).toHaveProperty('ratingImdb', updatedMovieData.ratingImdb);
+            expect(response.body).toHaveProperty('releaseYear', updatedMovieData.releaseYear);
+            expect(response.body).toHaveProperty('description', updatedMovieData.description);
+            expect(response.body).toHaveProperty('views', updatedMovieData.views);
+        });
+
+        test('should return status 400 if put is not made', async () => {
+            const movieId = 324;
+            const updatedMovieData = {
+                title: 'Updated Movie Title',
+                photoSrc: 'Updated photo source',
+                trailerSrc: 'Updated trailer source',
+                duration: 'Updated duration',
+                ratingImdb: 9.5,
+                releaseYear: 2022,
+                description: 'Updated movie description',
+                views: 1000,
+            };
+
+            const response = await request(app)
+                .put(`/movies/${movieId}`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
+                .send(updatedMovieData);
+            expect(response.status).toBe(400);
+        });
+
+        test('should return status 401 if not authorized', async () => {
+            const movieId = 324;
+            const updatedMovieData = {
+                title: 'Updated Movie Title',
+                videoSrc: 'Updated video source',
+                photoSrc: 'Updated photo source',
+                trailerSrc: 'Updated trailer source',
+                duration: 'Updated duration',
+                ratingImdb: 9.5,
+                releaseYear: 2022,
+                description: 'Updated movie description',
+                views: 1000,
+            };
+
+            const response = await request(app).put(`/movies/${movieId}`).send(updatedMovieData);
 
             expect(response.status).toBe(401);
         });
     });
 
-    test('PUT /movies/:id should return status 200 and updated movie details', async () => {
-        const movieId = 5;
-        const updatedMovieData = {
-            title: 'Updated Movie Title',
-            videoSrc: 'Updated video source',
-            photoSrc: 'Updated photo source',
-            trailerSrc: 'Updated trailer source',
-            duration: 'Updated duration',
-            ratingImdb: 9.5,
-            releaseYear: 2022,
-            description: 'Updated movie description',
-            views: 1000,
-        };
+    describe('PATCH /movies/:id', () => {
+        test('should return status 200 and the updated movie', async () => {
+            const movieId = 324;
+            const updatedMovieData = {
+                title: 'Inception Updated',
+            };
+            const response = await request(app)
+                .patch(`/movies/${movieId}`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
+                .send(updatedMovieData);
+            expect(response.status).toBe(200);
+            expect(response.body.title).toBe(updatedMovieData.title);
+        });
 
-        const response = await request(app)
-            .put(`/movies/${movieId}`)
-            .set('Authorization', `Bearer 096hjfk`)
-            .send(updatedMovieData);
-        expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('title', updatedMovieData.title);
-        expect(response.body).toHaveProperty('videoSrc', updatedMovieData.videoSrc);
-        expect(response.body).toHaveProperty('photoSrc', updatedMovieData.photoSrc);
-        expect(response.body).toHaveProperty('trailerSrc', updatedMovieData.trailerSrc);
-        expect(response.body).toHaveProperty('duration', updatedMovieData.duration);
-        expect(response.body).toHaveProperty('ratingImdb', updatedMovieData.ratingImdb);
-        expect(response.body).toHaveProperty('releaseYear', updatedMovieData.releaseYear);
-        expect(response.body).toHaveProperty('description', updatedMovieData.description);
-        expect(response.body).toHaveProperty('views', updatedMovieData.views);
+        test('should return status 400 if patch is not made', async () => {
+            const movieId = 32400;
+            const updatedMovieData = {
+                title: 'Updated Movie Title',
+                photoSrc: 'Updated photo source',
+            };
+
+            const response = await request(app)
+                .patch(`/movies/${movieId}`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
+                .send(updatedMovieData);
+            expect(response.status).toBe(400);
+        });
+
+        test('should return status 401 if not authorized', async () => {
+            const movieId = 324;
+            const updatedMovieData = {
+                title: 'Inception Updated',
+            };
+            const response = await request(app).patch(`/movies/${movieId}`).send(updatedMovieData);
+            expect(response.status).toBe(401);
+        });
     });
 
-    test('PATCH /movies/:id should return status 200 and the updated movie', async () => {
-        const movieId = 5;
-        const updatedMovieData = {
-            title: 'Inception Updated',
-        };
-        const response = await request(app)
-            .patch(`/movies/${movieId}`)
-            .set('Authorization', `Bearer 096hjfk`)
-            .send(updatedMovieData);
+    describe('GET /searchMovies', () => {
+        test('should return status 200 and list of movies matching the title', async () => {
+            const searchTitle = 'Goku';
+            const response = await request(app)
+                .get(`/searchMovies?title=${encodeURIComponent(searchTitle)}`)
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                );
+            expect(response.status).toBe(200);
+            expect(Array.isArray(response.body.movies)).toBe(true);
+            expect(
+                response.body.movies.every((movie: any) =>
+                    movie.title.toLowerCase().includes(searchTitle.toLowerCase()),
+                ),
+            ).toBe(true);
+        });
 
-        expect(response.status).toBe(200);
-        expect(response.body.title).toBe(updatedMovieData.title);
+        test('should return status 401 if not authorized', async () => {
+            const searchTitle = 'Goku';
+            const response = await request(app).get(`/searchMovies?title=${encodeURIComponent(searchTitle)}`);
+            expect(response.status).toBe(401);
+        });
     });
 
-    test('GET /searchMovies should return status 200 and list of movies matching the title', async () => {
-        const searchTitle = 'Goku';
-        const response = await request(app)
-            .get(`/searchMovies?title=${encodeURIComponent(searchTitle)}`)
-            .set('Authorization', `Bearer 096hjfk`);
-        expect(response.status).toBe(200);
-        expect(Array.isArray(response.body.movies)).toBe(true);
-        expect(
-            response.body.movies.every((movie: any) => movie.title.toLowerCase().includes(searchTitle.toLowerCase())),
-        ).toBe(true);
+    describe('GET /latestMovies', () => {
+        test('should return status 200 and list of latest movies', async () => {
+            const response = await request(app)
+                .get('/latestMovies')
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                );
+            expect(response.status).toBe(200);
+            expect(Array.isArray(response.body)).toBe(true);
+        });
+
+        test('should return status 401 if not authorized', async () => {
+            const response = await request(app).get('/latestMovies');
+            expect(response.status).toBe(401);
+        });
     });
 
-    test('GET /latestMovies should return status 200 and list of latest movies', async () => {
-        const response = await request(app).get('/latestMovies').set('Authorization', `Bearer 096hjfk`);
-        expect(response.status).toBe(200);
-        expect(Array.isArray(response.body)).toBe(true);
-    });
+    describe('POST /favoritesMovies', () => {
+        test('should return status 200 and updated user with favorite movie', async () => {
+            const movieId = 20;
+            const userId = 14;
+            const requestBody = { movieId, userId };
+            const response = await request(app)
+                .post('/favoritesMovies')
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
+                .send(requestBody);
+            expect(response.status).toBe(200);
+            expect(response.body.favMovies.some((favMovie: any) => favMovie.id === movieId)).toBe(true);
+        });
 
-    test('POST /favoritesMovies should return status 200 and updated user with favorite movie', async () => {
-        const movieId = 5;
-        const userId = 14;
-        const requestBody = { movieId, userId };
-        const response = await request(app)
-            .post('/favoritesMovies')
-            .set('Authorization', `Bearer 096hjfk`)
-            .send(requestBody);
+        test('should return status 400 if error ocurred', async () => {
+            const movieId = 20;
+            const userId = 14;
+            const requestBody = { movieId, userId };
+            const response = await request(app)
+                .post('/favoritesMovies')
+                .set(
+                    'Authorization',
+                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
+                )
+                .send(requestBody);
+            expect(response.status).toBe(400);
+        });
 
-        expect(response.status).toBe(200);
-        expect(response.body.favMovies.some((favMovie: any) => favMovie.id === movieId)).toBe(true);
+        test('should return status 401 if not authorized', async () => {
+            const response = await request(app).post('/favoritesMovies');
+            expect(response.status).toBe(401);
+        });
     });
 });
