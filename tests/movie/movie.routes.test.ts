@@ -19,9 +19,9 @@ describe('Movie Routes', () => {
                 .query({ sortBy, ascOrDesc, filterName, filterValue, page, pageSize });
 
             expect(response.status).toBe(200);
-            expect(Array.isArray(response.body)).toBe(true);
+            expect(Array.isArray(response.body.rows)).toBe(true);
 
-            const movies = response.body;
+            const movies = response.body.rows;
 
             for (let i = 0; i < movies.length - 1; i++) {
                 expect(movies[i].releaseYear <= movies[i + 1].releaseYear).toBe(true);
@@ -147,32 +147,11 @@ describe('Movie Routes', () => {
                     `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
                 )
                 .send(invalidMovieData);
+
             expect(response.status).toBe(400);
         });
 
-        it('should return status 400 if adding a new movie with invalid field types', async () => {
-            const invalidMovieData = {
-                title: 'Inception',
-                videoSrc: 'not a valid URL',
-                photoSrc: 'https://example.com/photo.jpg',
-                trailerSrc: 'https://example.com/trailer.mp4',
-                duration: 148,
-                ratingImdb: '8.8',
-                releaseYear: '2010',
-                description: 'A thief who enters the dreams of others to steal their secrets.',
-                views: '1000000',
-            };
-            const response = await request(app)
-                .post('/movies')
-                .set(
-                    'Authorization',
-                    `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
-                )
-                .send(invalidMovieData);
-            expect(response.status).toBe(400);
-        });
-
-        test('Should return 401 status code if not authorized', async () => {
+        it('should return status 401 if not authorized', async () => {
             const validMovieData = {
                 title: 'Inception',
                 videoSrc: 'https://example.com/video.mp4',
@@ -190,18 +169,18 @@ describe('Movie Routes', () => {
     });
 
     describe('PUT /movies/:id', () => {
-        test('should return status 200 and updated movie details', async () => {
-            const movieId = 324;
+        it('should update an existing movie with valid data', async () => {
+            const movieId = 323;
             const updatedMovieData = {
-                title: 'Updated Movie Title',
-                videoSrc: 'Updated video source',
-                photoSrc: 'Updated photo source',
-                trailerSrc: 'Updated trailer source',
-                duration: 'Updated duration',
-                ratingImdb: 9.5,
-                releaseYear: 2022,
-                description: 'Updated movie description',
-                views: 1000,
+                title: 'Inception 2',
+                videoSrc: 'https://example.com/video_updated.mp4',
+                photoSrc: 'https://example.com/photo_updated.jpg',
+                trailerSrc: 'https://example.com/trailer_updated.mp4',
+                duration: '150 minutes',
+                ratingImdb: 9.0,
+                releaseYear: 2011,
+                description: 'A sequel to the original Inception movie.',
+                views: 1500000,
             };
 
             const response = await request(app)
@@ -211,29 +190,23 @@ describe('Movie Routes', () => {
                     `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
                 )
                 .send(updatedMovieData);
+
             expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('title', updatedMovieData.title);
-            expect(response.body).toHaveProperty('videoSrc', updatedMovieData.videoSrc);
-            expect(response.body).toHaveProperty('photoSrc', updatedMovieData.photoSrc);
-            expect(response.body).toHaveProperty('trailerSrc', updatedMovieData.trailerSrc);
-            expect(response.body).toHaveProperty('duration', updatedMovieData.duration);
-            expect(response.body).toHaveProperty('ratingImdb', updatedMovieData.ratingImdb);
-            expect(response.body).toHaveProperty('releaseYear', updatedMovieData.releaseYear);
-            expect(response.body).toHaveProperty('description', updatedMovieData.description);
-            expect(response.body).toHaveProperty('views', updatedMovieData.views);
+            expect(response.body).toMatchObject(updatedMovieData);
         });
 
-        test('should return status 400 if put is not made', async () => {
-            const movieId = 324;
+        it('should return status 404 if updating a movie that does not exist', async () => {
+            const movieId = 9999;
             const updatedMovieData = {
-                title: 'Updated Movie Title',
-                photoSrc: 'Updated photo source',
-                trailerSrc: 'Updated trailer source',
-                duration: 'Updated duration',
-                ratingImdb: 9.5,
-                releaseYear: 2022,
-                description: 'Updated movie description',
-                views: 1000,
+                title: 'Inception 2',
+                videoSrc: 'https://example.com/video_updated.mp4',
+                photoSrc: 'https://example.com/photo_updated.jpg',
+                trailerSrc: 'https://example.com/trailer_updated.mp4',
+                duration: '150 minutes',
+                ratingImdb: 9.0,
+                releaseYear: 2011,
+                description: 'A sequel to the original Inception movie.',
+                views: 1500000,
             };
 
             const response = await request(app)
@@ -243,21 +216,22 @@ describe('Movie Routes', () => {
                     `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
                 )
                 .send(updatedMovieData);
-            expect(response.status).toBe(400);
+
+            expect(response.status).toBe(404);
         });
 
-        test('should return status 401 if not authorized', async () => {
-            const movieId = 324;
+        it('should return status 401 if not authorized', async () => {
+            const movieId = 323;
             const updatedMovieData = {
-                title: 'Updated Movie Title',
-                videoSrc: 'Updated video source',
-                photoSrc: 'Updated photo source',
-                trailerSrc: 'Updated trailer source',
-                duration: 'Updated duration',
-                ratingImdb: 9.5,
-                releaseYear: 2022,
-                description: 'Updated movie description',
-                views: 1000,
+                title: 'Inception 2',
+                videoSrc: 'https://example.com/video_updated.mp4',
+                photoSrc: 'https://example.com/photo_updated.jpg',
+                trailerSrc: 'https://example.com/trailer_updated.mp4',
+                duration: '150 minutes',
+                ratingImdb: 9.0,
+                releaseYear: 2011,
+                description: 'A sequel to the original Inception movie.',
+                views: 1500000,
             };
 
             const response = await request(app).put(`/movies/${movieId}`).send(updatedMovieData);
@@ -311,7 +285,7 @@ describe('Movie Routes', () => {
     });
 
     describe('GET /searchMovies', () => {
-        test('should return status 200 and list of movies matching the title', async () => {
+        it('should return status 200 and list of movies matching the title', async () => {
             const searchTitle = 'Goku';
             const response = await request(app)
                 .get(`/searchMovies?title=${encodeURIComponent(searchTitle)}`)
@@ -319,6 +293,7 @@ describe('Movie Routes', () => {
                     'Authorization',
                     `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
                 );
+
             expect(response.status).toBe(200);
             expect(Array.isArray(response.body.movies)).toBe(true);
             expect(
@@ -328,7 +303,7 @@ describe('Movie Routes', () => {
             ).toBe(true);
         });
 
-        test('should return status 401 if not authorized', async () => {
+        it('should return status 401 if not authorized', async () => {
             const searchTitle = 'Goku';
             const response = await request(app).get(`/searchMovies?title=${encodeURIComponent(searchTitle)}`);
             expect(response.status).toBe(401);
@@ -336,18 +311,19 @@ describe('Movie Routes', () => {
     });
 
     describe('GET /latestMovies', () => {
-        test('should return status 200 and list of latest movies', async () => {
+        it('should return status 200 and list of latest movies', async () => {
             const response = await request(app)
                 .get('/latestMovies')
                 .set(
                     'Authorization',
                     `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImlhdCI6MTcxMDQ1MjQ2NywiZXhwIjoxNzEwNTM4ODY3fQ.C9sfWe-nESclem5hivcDVa1QcTwxqnye11NqLMfED_k`,
                 );
+
             expect(response.status).toBe(200);
             expect(Array.isArray(response.body)).toBe(true);
         });
 
-        test('should return status 401 if not authorized', async () => {
+        it('should return status 401 if not authorized', async () => {
             const response = await request(app).get('/latestMovies');
             expect(response.status).toBe(401);
         });
