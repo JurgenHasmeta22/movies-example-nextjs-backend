@@ -2,8 +2,8 @@ import { XMLParser } from 'fast-xml-parser';
 import fetch from 'node-fetch';
 import { parse } from 'node-html-parser';
 import { prisma } from '../app';
-import { Genre } from '../models/genre';
-import { Movie } from '../models/movie';
+import { Genre } from '../models/genre.model';
+import { Movie } from '../models/movie.model';
 import https from 'https';
 import fs from 'fs';
 

@@ -1,9 +1,9 @@
 import express from 'express';
 import movieController from '../controllers/movie.controller';
-import { validateMiddleware } from '../middlewares/validateMiddleware';
+import { validateMiddleware } from '../middlewares/validate.middleware';
 import { movieSchemaUpdate, movieSchemaPost, movieQuerySchema } from '../schemas/movie.schema';
 import { favoriteSchema } from '../schemas/favorite.schema';
-import { authMiddleware } from '../middlewares/authMiddleware';
+import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 

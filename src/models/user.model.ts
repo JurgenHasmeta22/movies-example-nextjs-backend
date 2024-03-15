@@ -1,4 +1,4 @@
-import { Favorite } from './favorite';
+import { Favorite } from './favorite.model';
 import { Comment } from './comment.model';
 
 export interface User {

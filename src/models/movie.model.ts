@@ -1,5 +1,5 @@
 import { MovieGenre } from './movieGenre';
-import { Favorite } from './favorite';
+import { Favorite } from './favorite.model';
 
 export interface Movie {
     id?: number;
