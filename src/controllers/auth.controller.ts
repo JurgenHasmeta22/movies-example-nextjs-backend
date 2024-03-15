@@ -15,9 +15,9 @@ const authController = {
             const user: User | null = await authService.signUp({ email, password, userName });
 
             if (user) {
-                res.send({ user, token: createToken(user.id) });
+                res.status(200).send({ user, token: createToken(user.id) });
             } else {
-                res.status(400).send({ error: 'User already exists' });
+                res.status(409).send({ error: 'User already exists' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
@@ -30,7 +30,7 @@ const authController = {
             const user: User | null = await authService.login(email, password);
 
             if (user) {
-                res.send({ user, token: createToken(user.id) });
+                res.status(200).send({ user, token: createToken(user.id) });
             } else {
                 res.status(400).send({ error: 'Credentials are wrong' });
             }
@@ -41,7 +41,7 @@ const authController = {
     async validate(req: CustomRequest, res: Response) {
         try {
             if (req.user) {
-                res.send(req.user);
+                res.status(200).send(req.user);
             } else {
                 res.status(400).send({ error: 'User not validated' });
             }
