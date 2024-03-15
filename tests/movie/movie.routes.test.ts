@@ -34,6 +34,7 @@ describe('Movie Routes', () => {
     test('GET /movies/:id should return status 200 and the requested movie', async () => {
         const movieId = 5;
         const response = await request(app).get(`/movies/${movieId}`);
+
         expect(response.status).toBe(200);
         expect(response.body.id).toBe(movieId);
     });
@@ -41,6 +42,7 @@ describe('Movie Routes', () => {
     test('GET /movies/:title should return status 200 and the movie with the given title', async () => {
         const movieTitle = 'Goku';
         const response = await request(app).get(`/movies/${encodeURIComponent(movieTitle)}`);
+
         expect(response.status).toBe(200);
         expect(response.body.title).toBe(movieTitle);
     });
@@ -48,6 +50,7 @@ describe('Movie Routes', () => {
     test('DELETE /movies/:id should return status 200 and a success message', async () => {
         const movieId = 320;
         const response = await request(app).delete(`/movies/${movieId}`);
+
         expect(response.status).toBe(200);
         expect(response.body.msg).toBe('Movie deleted successfully');
     });
@@ -65,8 +68,8 @@ describe('Movie Routes', () => {
                 description: 'A thief who enters the dreams of others to steal their secrets.',
                 views: 1000000,
             };
-
             const response = await request(app).post('/movies').send(validMovieData);
+
             expect(response.status).toBe(200);
             expect(response.body).toMatchObject(validMovieData);
         });
@@ -74,6 +77,7 @@ describe('Movie Routes', () => {
         it('should return status 400 if adding a new movie with missing required fields', async () => {
             const invalidMovieData = {};
             const response = await request(app).post('/movies').send(invalidMovieData);
+
             expect(response.status).toBe(400);
         });
 
@@ -89,8 +93,8 @@ describe('Movie Routes', () => {
                 description: 'A thief who enters the dreams of others to steal their secrets.',
                 views: '1000000',
             };
-
             const response = await request(app).post('/movies').send(invalidMovieData);
+
             expect(response.status).toBe(400);
         });
     });
@@ -127,8 +131,8 @@ describe('Movie Routes', () => {
         const updatedMovieData = {
             title: 'Inception Updated',
         };
-
         const response = await request(app).patch(`/movies/${movieId}`).send(updatedMovieData);
+
         expect(response.status).toBe(200);
         expect(response.body.title).toBe(updatedMovieData.title);
     });
@@ -140,12 +144,13 @@ describe('Movie Routes', () => {
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body.movies)).toBe(true);
         expect(
-            response.body.movies.every((movie) => movie.title.toLowerCase().includes(searchTitle.toLowerCase())),
+            response.body.movies.every((movie: any) => movie.title.toLowerCase().includes(searchTitle.toLowerCase())),
         ).toBe(true);
     });
 
     test('GET /latestMovies should return status 200 and list of latest movies', async () => {
         const response = await request(app).get('/latestMovies');
+
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body)).toBe(true);
     });
@@ -155,7 +160,8 @@ describe('Movie Routes', () => {
         const userId = 14;
         const requestBody = { movieId, userId };
         const response = await request(app).post('/favoritesMovies').send(requestBody);
+
         expect(response.status).toBe(200);
-        expect(response.body.favMovies.some((favMovie) => favMovie.id === movieId)).toBe(true);
+        expect(response.body.favMovies.some((favMovie: any) => favMovie.id === movieId)).toBe(true);
     });
 });
