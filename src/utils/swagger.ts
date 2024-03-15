@@ -1008,6 +1008,320 @@ export const options = {
                     },
                 },
             },
+            '/genres': {
+                get: {
+                    summary: 'Returns the list of all genres',
+                    tags: ['Genres'],
+                    security: [
+                        {
+                            bearerAuth: [],
+                        },
+                    ],
+                    parameters: [
+                        {
+                            name: 'sortBy',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Sort field for genres (e.g., name)',
+                        },
+                        {
+                            name: 'ascOrDesc',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                                enum: ['asc', 'desc'],
+                            },
+                            description: 'Sort order for genres (ascending or descending)',
+                        },
+                        {
+                            name: 'page',
+                            in: 'query',
+                            schema: {
+                                type: 'integer',
+                            },
+                            description: 'Page number for pagination',
+                        },
+                        {
+                            name: 'pageSize',
+                            in: 'query',
+                            schema: {
+                                type: 'integer',
+                            },
+                            description: 'Number of items per page for pagination',
+                        },
+                        {
+                            name: 'name',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Search genres by name',
+                        },
+                        {
+                            name: 'filterValue',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Value to filter genres',
+                        },
+                        {
+                            name: 'filterName',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Name of the field to filter genres',
+                        },
+                        {
+                            name: 'filterOperator',
+                            in: 'query',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Operator to use for filtering (e.g., eq, gt, lt)',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'The list of genres',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'array',
+                                        items: {
+                                            $ref: '#/components/schemas/Genre',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                post: {
+                    summary: 'Create a new genre',
+                    tags: ['Genres'],
+                    security: [
+                        {
+                            bearerAuth: [],
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/GenrePost',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'The genre was successfully created',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Genre',
+                                    },
+                                },
+                            },
+                        },
+                        '500': {
+                            description: 'Some server error',
+                        },
+                    },
+                },
+            },
+            '/genres/{id}': {
+                get: {
+                    summary: 'Get the genre by id',
+                    tags: ['Genres'],
+                    security: [
+                        {
+                            bearerAuth: [],
+                        },
+                    ],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'The genre id',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'The genre description by id',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Genre',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'The genre was not found',
+                        },
+                    },
+                },
+                delete: {
+                    summary: 'Remove the genre by id',
+                    tags: ['Genres'],
+                    security: [
+                        {
+                            bearerAuth: [],
+                        },
+                    ],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'The genre id',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'The genre was deleted',
+                        },
+                        '404': {
+                            description: 'The genre was not found',
+                        },
+                    },
+                },
+                patch: {
+                    summary: 'Update the genre by id',
+                    tags: ['Genres'],
+                    security: [
+                        {
+                            bearerAuth: [],
+                        },
+                    ],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'The genre id to update',
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/GenrePatch',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'The genre was updated',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Genre',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'The genre was not found',
+                        },
+                        '500': {
+                            description: 'Some error happened',
+                        },
+                    },
+                },
+            },
+            '/genres/{title}': {
+                get: {
+                    summary: 'Get the genre by title',
+                    tags: ['Genres'],
+                    security: [
+                        {
+                            bearerAuth: [],
+                        },
+                    ],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'title',
+                            schema: {
+                                type: 'string',
+                            },
+                            required: true,
+                            description: 'The genre title',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'The genre description by title',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Genre',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'The genre was not found',
+                        },
+                    },
+                },
+            },
+            '/searchGenres': {
+                get: {
+                    summary: 'Search genres',
+                    tags: ['Genres'],
+                    security: [
+                        {
+                            bearerAuth: [],
+                        },
+                    ],
+                    parameters: [
+                        {
+                            in: 'query',
+                            name: 'name',
+                            schema: {
+                                type: 'string',
+                            },
+                            required: true,
+                            description: 'The name of the genre to search',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'The list of genres matching the search criteria',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'array',
+                                        items: {
+                                            $ref: '#/components/schemas/Genre',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
     },
     security: [
