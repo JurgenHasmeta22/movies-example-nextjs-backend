@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { prisma } from '../index';
+import { prisma } from '../app';
 import { Favorite } from '../models/favorite';
 import { Movie, MoviePatch, MoviePost } from '../models/movie';
 import { User } from '../models/user';
