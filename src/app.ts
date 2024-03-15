@@ -23,7 +23,7 @@ export const prisma = new PrismaClient({
 });
 
 const specs = swaggerJsDoc(options);
-const app = express();
+export const app = express();
 
 app.use(cors());
 app.use(express.json());
