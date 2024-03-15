@@ -8,4 +8,4 @@ export interface Episode {
     description: string;
     serieId: number;
     serie: Serie;
-  }
+}

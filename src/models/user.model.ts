@@ -8,4 +8,4 @@ export interface User {
     password: string;
     comments?: Comment[];
     favMovies?: Favorite[];
-  }
+}

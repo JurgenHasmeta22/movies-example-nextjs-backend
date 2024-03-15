@@ -7,4 +7,4 @@ export interface Serie {
     releaseYear: number;
     ratingImdb: number;
     episodes: Episode[];
-  }
+}
