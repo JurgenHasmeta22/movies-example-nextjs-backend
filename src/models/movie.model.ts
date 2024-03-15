@@ -13,7 +13,7 @@ export interface Movie {
     description: string;
     views: number;
     genres?: MovieGenre[];
-    userWhoBookmarkedIt?: Favorite[];
+    usersWhoBookmarkedIt?: Favorite[];
 }
 
 export interface MoviePatch {
