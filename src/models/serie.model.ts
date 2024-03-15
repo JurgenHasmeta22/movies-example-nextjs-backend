@@ -1,4 +1,4 @@
-import { Episode } from './episode';
+import { Episode } from './episode.model';
 
 export interface Serie {
     id: number;

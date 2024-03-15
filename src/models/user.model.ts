@@ -1,5 +1,5 @@
 import { Favorite } from './favorite';
-import { Comment } from './comment';
+import { Comment } from './comment.model';
 
 export interface User {
     id: number;
