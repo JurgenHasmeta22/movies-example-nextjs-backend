@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import movieController from '../../src/controllers/movie.controller';
 import movieService from '../../src/services/movie.service';
 
-jest.mock('../services/movie.service');
+jest.mock('../../src/services/movie.service');
 const mockedMovieService: any = movieService as jest.Mocked<typeof mockedMovieService>;
 
 describe('movieController', () => {

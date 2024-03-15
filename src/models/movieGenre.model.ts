@@ -7,4 +7,4 @@ export interface MovieGenre {
     genreId?: number;
     movie?: Movie;
     genre?: Genre;
-  }
+}

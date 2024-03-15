@@ -1,4 +1,4 @@
-import { User } from "./user.model";
+import { User } from './user.model';
 
 export interface Comment {
     id?: number;
@@ -6,4 +6,4 @@ export interface Comment {
     createdAt?: Date;
     userId?: number;
     user?: User;
-  }
+}

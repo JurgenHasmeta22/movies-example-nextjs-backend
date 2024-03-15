@@ -8,17 +8,17 @@ const movieController = {
 
         try {
             const { rows, count } = await movieService.getMovies({
-                sortBy: sortBy as string,
-                ascOrDesc: ascOrDesc as 'asc' | 'desc',
+                sortBy: sortBy! as string,
+                ascOrDesc: ascOrDesc! as 'asc' | 'desc',
                 perPage: pageSize ? Number(pageSize) : 20,
-                page: Number(page),
-                title: title as string,
+                page: Number(page!),
+                title: title! as string,
                 filterValue: filterValue ? Number(filterValue) : undefined,
-                filterNameString: filterName as string,
-                filterOperatorString: filterOperator as '>' | '=' | '<',
+                filterNameString: filterName! as string,
+                filterOperatorString: filterOperator! as '>' | '=' | '<',
             });
 
-            res.send({ rows, count });
+            res.status(200).send({ rows, count });
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -30,7 +30,7 @@ const movieController = {
             const movie = await movieService.getMovieById(movieId);
 
             if (movie) {
-                res.send(movie);
+                res.status(200).send(movie);
             } else {
                 res.status(400).send({ error: 'Movie not found' });
             }
@@ -45,7 +45,7 @@ const movieController = {
             .join('');
         try {
             const movie = await movieService.getMovieByTitle(title);
-            res.send(movie);
+            res.status(200).send(movie);
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -53,7 +53,7 @@ const movieController = {
     async getLatestMovies(req: Request, res: Response) {
         try {
             const latestMovies = await movieService.getLatestMovies();
-            res.send(latestMovies);
+            res.status(200).send(latestMovies);
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -65,9 +65,9 @@ const movieController = {
             const updatedUser = await movieService.addFavoriteMovieByUserId(userId, movieId);
 
             if (updatedUser) {
-                res.send(updatedUser);
+                res.status(200).send(updatedUser);
             } else {
-                res.send({ error: 'Favorites movies not updated' });
+                res.status(400).send({ error: 'Favorites movies not updated' });
             }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
@@ -81,7 +81,7 @@ const movieController = {
             const movie: Movie | null = await movieService.updateMovieById(movieBodyParams, id);
 
             if (movie) {
-                res.send(movie);
+                res.status(200).send(movie);
             } else {
                 res.status(400).send({ error: 'Movie not updated' });
             }
@@ -96,7 +96,7 @@ const movieController = {
             const movie: Movie | null = await movieService.addMovie(movieBodyParams);
 
             if (movie) {
-                res.send(movie);
+                res.status(200).send(movie);
             } else {
                 res.status(400).send({ error: 'Movie not created' });
             }
@@ -109,7 +109,7 @@ const movieController = {
 
         try {
             const result = await movieService.deleteMovieById(idParam);
-            res.send({
+            res.status(200).send({
                 msg: result === 'Movie deleted successfully' ? result : 'Movie was not deleted',
             });
         } catch (err) {
@@ -121,7 +121,7 @@ const movieController = {
 
         try {
             const { movies, count } = await movieService.searchMoviesByTitle(String(title), Number(page));
-            res.send({ movies, count });
+            res.status(200).send({ movies, count });
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }

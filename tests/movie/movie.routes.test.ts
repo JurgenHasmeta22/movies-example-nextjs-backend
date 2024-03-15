@@ -12,6 +12,7 @@ describe('Movie Routes', () => {
             const pageSize = 10;
             const response = await request(app)
                 .get('/movies')
+                .set('Authorization', `Bearer 096hjfk`)
                 .query({ sortBy, ascOrDesc, filterName, filterValue, page, pageSize });
 
             expect(response.status).toBe(200);
@@ -29,30 +30,74 @@ describe('Movie Routes', () => {
 
             expect(movies.length).toBeLessThanOrEqual(pageSize);
         });
+
+        test('Should return 401 status code if not authorized', async () => {
+            const sortBy = 'releaseYear';
+            const ascOrDesc = 'asc';
+            const filterName = 'title';
+            const filterValue = 'Inception';
+            const page = 1;
+            const pageSize = 10;
+            const response = await request(app)
+                .get('/movies')
+                .set('Authorization', `Bearer 096hjfk`)
+                .query({ sortBy, ascOrDesc, filterName, filterValue, page, pageSize });
+
+            expect(response.status).toBe(401);
+        });
     });
 
-    test('GET /movies/:id should return status 200 and the requested movie', async () => {
-        const movieId = 5;
-        const response = await request(app).get(`/movies/${movieId}`);
+    describe('GET /movies/:id', () => {
+        test('Should return status 200 and the requested movie', async () => {
+            const movieId = 5;
+            const response = await request(app).get(`/movies/${movieId}`).set('Authorization', `Bearer jokf`);
 
-        expect(response.status).toBe(200);
-        expect(response.body.id).toBe(movieId);
+            expect(response.status).toBe(200);
+            expect(response.body.id).toBe(movieId);
+        });
+
+        test('Should return 401 status code if not authorized', async () => {
+            const movieId = 5;
+            const response = await request(app).get(`/movies/${movieId}`).set('Authorization', `Bearer jokf`);
+
+            expect(response.status).toBe(401);
+        });
     });
 
-    test('GET /movies/:title should return status 200 and the movie with the given title', async () => {
-        const movieTitle = 'Goku';
-        const response = await request(app).get(`/movies/${encodeURIComponent(movieTitle)}`);
+    describe('GET /movies/:title', () => {
+        test('Should return status 200 and the movie with the given title', async () => {
+            const movieTitle = 'Goku';
+            const response = await request(app)
+                .get(`/movies/${encodeURIComponent(movieTitle)}`)
+                .set('Authorization', `Bearer jokf`);
 
-        expect(response.status).toBe(200);
-        expect(response.body.title).toBe(movieTitle);
+            expect(response.status).toBe(200);
+            expect(response.body.title).toBe(movieTitle);
+        });
+
+        test('Should return 401 status code if not authorized', async () => {
+            const movieTitle = 'Goku';
+            const response = await request(app).get(`/movies/${encodeURIComponent(movieTitle)}`);
+
+            expect(response.status).toBe(401);
+        });
     });
 
-    test('DELETE /movies/:id should return status 200 and a success message', async () => {
-        const movieId = 320;
-        const response = await request(app).delete(`/movies/${movieId}`);
+    describe('DELETE /movies/:id', () => {
+        test('Should return status 200 and a success message', async () => {
+            const movieId = 320;
+            const response = await request(app).delete(`/movies/${movieId}`).set('Authorization', `Bearer jokf`);
 
-        expect(response.status).toBe(200);
-        expect(response.body.msg).toBe('Movie deleted successfully');
+            expect(response.status).toBe(200);
+            expect(response.body.msg).toBe('Movie deleted successfully');
+        });
+
+        test('Should return 401 status code if not authorized', async () => {
+            const movieId = 320;
+            const response = await request(app).delete(`/movies/${movieId}`);
+
+            expect(response.status).toBe(401);
+        });
     });
 
     describe('POST /movies', () => {
@@ -68,7 +113,10 @@ describe('Movie Routes', () => {
                 description: 'A thief who enters the dreams of others to steal their secrets.',
                 views: 1000000,
             };
-            const response = await request(app).post('/movies').send(validMovieData);
+            const response = await request(app)
+                .post('/movies')
+                .set('Authorization', `Bearer jokf`)
+                .send(validMovieData);
 
             expect(response.status).toBe(200);
             expect(response.body).toMatchObject(validMovieData);
@@ -76,7 +124,10 @@ describe('Movie Routes', () => {
 
         it('should return status 400 if adding a new movie with missing required fields', async () => {
             const invalidMovieData = {};
-            const response = await request(app).post('/movies').send(invalidMovieData);
+            const response = await request(app)
+                .post('/movies')
+                .set('Authorization', `Bearer jokf`)
+                .send(invalidMovieData);
 
             expect(response.status).toBe(400);
         });
@@ -93,9 +144,32 @@ describe('Movie Routes', () => {
                 description: 'A thief who enters the dreams of others to steal their secrets.',
                 views: '1000000',
             };
-            const response = await request(app).post('/movies').send(invalidMovieData);
+            const response = await request(app)
+                .post('/movies')
+                .set('Authorization', `Bearer jokf`)
+                .send(invalidMovieData);
 
             expect(response.status).toBe(400);
+        });
+
+        test('Should return 401 status code if not authorized', async () => {
+            const validMovieData = {
+                title: 'Inception',
+                videoSrc: 'https://example.com/video.mp4',
+                photoSrc: 'https://example.com/photo.jpg',
+                trailerSrc: 'https://example.com/trailer.mp4',
+                duration: '148 minutes',
+                ratingImdb: 8.8,
+                releaseYear: 2010,
+                description: 'A thief who enters the dreams of others to steal their secrets.',
+                views: 1000000,
+            };
+            const response = await request(app)
+                .post('/movies')
+                .set('Authorization', `Bearer jokf`)
+                .send(validMovieData);
+
+            expect(response.status).toBe(401);
         });
     });
 
@@ -113,7 +187,10 @@ describe('Movie Routes', () => {
             views: 1000,
         };
 
-        const response = await request(app).put(`/movies/${movieId}`).send(updatedMovieData);
+        const response = await request(app)
+            .put(`/movies/${movieId}`)
+            .set('Authorization', `Bearer 096hjfk`)
+            .send(updatedMovieData);
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('title', updatedMovieData.title);
         expect(response.body).toHaveProperty('videoSrc', updatedMovieData.videoSrc);
@@ -131,7 +208,10 @@ describe('Movie Routes', () => {
         const updatedMovieData = {
             title: 'Inception Updated',
         };
-        const response = await request(app).patch(`/movies/${movieId}`).send(updatedMovieData);
+        const response = await request(app)
+            .patch(`/movies/${movieId}`)
+            .set('Authorization', `Bearer 096hjfk`)
+            .send(updatedMovieData);
 
         expect(response.status).toBe(200);
         expect(response.body.title).toBe(updatedMovieData.title);
@@ -139,8 +219,9 @@ describe('Movie Routes', () => {
 
     test('GET /searchMovies should return status 200 and list of movies matching the title', async () => {
         const searchTitle = 'Goku';
-        const response = await request(app).get(`/searchMovies?title=${encodeURIComponent(searchTitle)}`);
-
+        const response = await request(app)
+            .get(`/searchMovies?title=${encodeURIComponent(searchTitle)}`)
+            .set('Authorization', `Bearer 096hjfk`);
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body.movies)).toBe(true);
         expect(
@@ -149,8 +230,7 @@ describe('Movie Routes', () => {
     });
 
     test('GET /latestMovies should return status 200 and list of latest movies', async () => {
-        const response = await request(app).get('/latestMovies');
-
+        const response = await request(app).get('/latestMovies').set('Authorization', `Bearer 096hjfk`);
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body)).toBe(true);
     });
@@ -159,7 +239,10 @@ describe('Movie Routes', () => {
         const movieId = 5;
         const userId = 14;
         const requestBody = { movieId, userId };
-        const response = await request(app).post('/favoritesMovies').send(requestBody);
+        const response = await request(app)
+            .post('/favoritesMovies')
+            .set('Authorization', `Bearer 096hjfk`)
+            .send(requestBody);
 
         expect(response.status).toBe(200);
         expect(response.body.favMovies.some((favMovie: any) => favMovie.id === movieId)).toBe(true);
