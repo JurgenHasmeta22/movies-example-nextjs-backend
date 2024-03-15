@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { prisma } from '../index';
+import { prisma } from '../app';
 import { User } from '../models/user';
 import { getUserFromToken } from '../utils/authUtils';
 

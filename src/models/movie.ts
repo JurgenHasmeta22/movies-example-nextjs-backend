@@ -2,7 +2,7 @@ import { MovieGenre } from './movieGenre';
 import { Favorite } from './favorite';
 
 export interface Movie {
-    id: number;
+    id?: number;
     title: string;
     videoSrc: string;
     photoSrc: string;
