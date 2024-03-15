@@ -1,4 +1,4 @@
-import { MovieGenre } from './movieGenre';
+import { MovieGenre } from './movieGenre.model';
 import { Favorite } from './favorite.model';
 
 export interface Movie {
