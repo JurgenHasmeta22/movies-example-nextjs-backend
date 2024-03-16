@@ -16,8 +16,8 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/series', serieQuerySchema, validateMiddleware, serieController.getSeries);
-router.get('/series/:id', serieIdParamSchema, validateMiddleware, serieController.getSerieById);
-router.get('/series/:title', serieTitleParamSchema, validateMiddleware, serieController.getSerieByTitle);
+router.get('/getSerieById/:id', serieIdParamSchema, validateMiddleware, serieController.getSerieById);
+router.get('/getSerieByTitle/:title', serieTitleParamSchema, validateMiddleware, serieController.getSerieByTitle);
 router.delete('/series/:id', serieIdParamSchema, validateMiddleware, serieController.deleteSerieById);
 router.patch('/series/:id', serieIdParamSchema, serieSchemaUpdate, validateMiddleware, serieController.updateSerieById);
 router.put('/series/:id', serieIdParamSchema, serieSchemaPost, validateMiddleware, serieController.updateSerieById);

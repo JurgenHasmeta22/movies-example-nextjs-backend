@@ -13,10 +13,9 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 const router = express.Router();
 
 router.use(authMiddleware);
-
 router.get('/episodes', episodeQuerySchema, validateMiddleware, episodeController.getEpisodes);
-router.get('/episodes/:id', episodeIdParamSchema, validateMiddleware, episodeController.getEpisodeById);
-router.get('/episodes/:title', episodeTitleParamSchema, validateMiddleware, episodeController.getEpisodeByTitle);
+router.get('/getEpisodeById/:id', episodeIdParamSchema, validateMiddleware, episodeController.getEpisodeById);
+router.get('/getEpisodeByTitle/:title', episodeTitleParamSchema, validateMiddleware, episodeController.getEpisodeByTitle);
 router.delete('/episodes/:id', episodeIdParamSchema, validateMiddleware, episodeController.deleteEpisodeById);
 router.patch(
     '/episodes/:id',
