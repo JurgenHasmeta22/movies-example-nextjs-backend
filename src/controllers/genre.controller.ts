@@ -107,7 +107,7 @@ const genreController = {
         const { name, page } = req.query;
 
         try {
-            const { genres } = await genreService.searchGenresByName(String(name), Number(page));
+            const genres = await genreService.searchGenresByName(String(name), Number(page));
 
             if (genres) {
                 res.status(200).send(genres);
