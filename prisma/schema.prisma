@@ -15,9 +15,9 @@ datasource db {
 }
 
 model User {
-  id          Int               @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   userName    String
-  email       String            @unique
+  email       String        @unique
   password    String
   comments    Comment[]
   favMovies   UserMovie[]
@@ -28,50 +28,50 @@ model User {
 }
 
 model Movie {
-  id                  Int             @id @default(autoincrement())
-  title               String          @default("")
-  videoSrc            String          @default("")
-  photoSrc            String          @default("")
-  trailerSrc          String          @default("")
-  duration            String          @default("")
-  ratingImdb          Float           @default(5.0)
-  releaseYear         Int             @default(2023)
-  description         String          @default("")
-  views               Int             @default(0)
-  genres              MovieGenre[]
+  id                   Int          @id @default(autoincrement())
+  title                String       @default("")
+  videoSrc             String       @default("")
+  photoSrc             String       @default("")
+  trailerSrc           String       @default("")
+  duration             String       @default("")
+  ratingImdb           Float        @default(5.0)
+  releaseYear          Int          @default(2023)
+  description          String       @default("")
+  views                Int          @default(0)
+  genres               MovieGenre[]
   usersWhoBookmarkedIt UserMovie[]
 }
 
 model Serie {
-  id            Int             @id @default(autoincrement())
-  title         String          @default("")
-  photoSrc      String          @default("")
-  releaseYear   Int             @default(2020)
-  ratingImdb    Float           @default(5.0)
-  seasons       Season[]
+  id                   Int         @id @default(autoincrement())
+  title                String      @default("")
+  photoSrc             String      @default("")
+  releaseYear          Int         @default(2020)
+  ratingImdb           Float       @default(5.0)
+  seasons              Season[]
   usersWhoBookmarkedIt UserSerie[]
 }
 
 model Season {
-  id             Int              @id @default(autoincrement())
-  title          String           @default("")
-  photoSrc       String           @default("")
-  releaseYear    Int              @default(2020)
-  ratingImdb     Float            @default(5.0)
-  serieId        Int
-  serie          Serie            @relation(fields: [serieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  episodes       Episode[]
+  id                   Int          @id @default(autoincrement())
+  title                String       @default("")
+  photoSrc             String       @default("")
+  releaseYear          Int          @default(2020)
+  ratingImdb           Float        @default(5.0)
+  serieId              Int
+  serie                Serie        @relation(fields: [serieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  episodes             Episode[]
   usersWhoBookmarkedIt UserSeason[]
 }
 
 model Episode {
-  id              Int               @id @default(autoincrement())
-  title           String            @default("")
-  photoSrc        String            @default("")
-  videoSrc        String            @default("")
-  description     String            @default("")
-  seasonId        Int               @default(0)
-  season          Season            @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id                   Int           @id @default(autoincrement())
+  title                String        @default("")
+  photoSrc             String        @default("")
+  videoSrc             String        @default("")
+  description          String        @default("")
+  seasonId             Int           @default(0)
+  season               Season        @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   usersWhoBookmarkedIt UserEpisode[]
 }
 
@@ -84,9 +84,9 @@ model Comment {
 }
 
 model Genre {
-  id            Int             @id @default(autoincrement())
-  name          String          @default("")
-  movies        MovieGenre[]
+  id                   Int          @id @default(autoincrement())
+  name                 String       @default("")
+  movies               MovieGenre[]
   usersWhoBookmarkedIt UserGenre[]
 }
 
