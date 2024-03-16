@@ -13,11 +13,6 @@ interface MovieServiceParams {
     filterOperatorString?: '>' | '=' | '<' | 'gt' | 'equals' | 'lt';
 }
 
-interface MovieServiceResponse {
-    rows: Movie[];
-    count: number;
-}
-
 const movieService = {
     async getMovies({
         sortBy,
@@ -28,7 +23,7 @@ const movieService = {
         filterValue,
         filterNameString,
         filterOperatorString,
-    }: MovieServiceParams): Promise<MovieServiceResponse> {
+    }: MovieServiceParams): Promise<Movie[]> {
         const filters: any = {};
         const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
         const take = perPage || 20;
@@ -54,9 +49,7 @@ const movieService = {
             take,
         });
 
-        const count = await prisma.movie.count({ where: filters });
-
-        return { rows: movies, count };
+        return movies;
     },
     async getMovieById(movieId: number): Promise<Movie | null> {
         return await prisma.movie.findFirst({
@@ -80,7 +73,7 @@ const movieService = {
         });
     },
     async addFavoriteMovieByUserId(userId: number, movieId: number): Promise<User | null> {
-        await prisma.favorite.create({
+        await prisma.favoriteMovie.create({
             data: { userId, movieId },
         });
 
@@ -159,7 +152,7 @@ const movieService = {
             return null;
         }
     },
-    async searchMoviesByTitle(title: string, page: number): Promise<{ movies: Movie[]; count: number }> {
+    async searchMoviesByTitle(title: string, page: number): Promise<Movie[]> {
         const query = {
             where: {
                 title: { contains: title },
@@ -170,13 +163,7 @@ const movieService = {
         };
 
         const movies = await prisma.movie.findMany(query);
-        const count = await prisma.movie.count({
-            where: {
-                title: { contains: title },
-            },
-        });
-
-        return { movies, count };
+        return movies;
     },
 };
 

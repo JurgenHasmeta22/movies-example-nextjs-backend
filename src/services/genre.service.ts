@@ -12,10 +12,6 @@ interface GetGenresParams {
     filterOperatorString: '>' | '=' | '<';
 }
 
-interface GenreServiceResponse {
-    rows: Genre[];
-}
-
 const genreService = {
     async getGenres({
         sortBy,
@@ -26,7 +22,7 @@ const genreService = {
         filterValue,
         filterNameString,
         filterOperatorString,
-    }: GetGenresParams): Promise<GenreServiceResponse> {
+    }: GetGenresParams): Promise<Genre[]> {
         const filters: any = {};
         const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
         const take = perPage || 20;
@@ -52,7 +48,7 @@ const genreService = {
             take,
         });
 
-        return { rows: genres };
+        return genres;
     },
     async getGenreById(id: number): Promise<Genre | null> {
         return await prisma.genre.findUnique({
@@ -62,20 +58,7 @@ const genreService = {
             include: {
                 movies: {
                     select: {
-                        movie: {
-                            select: {
-                                id: true,
-                                title: true,
-                                videoSrc: true,
-                                photoSrc: true,
-                                trailerSrc: true,
-                                duration: true,
-                                ratingImdb: true,
-                                releaseYear: true,
-                                description: true,
-                                views: true,
-                            },
-                        },
+                        movie: true,
                     },
                 },
             },
@@ -89,26 +72,53 @@ const genreService = {
             include: {
                 movies: {
                     select: {
-                        movie: {
-                            select: {
-                                id: true,
-                                title: true,
-                                videoSrc: true,
-                                photoSrc: true,
-                                trailerSrc: true,
-                                duration: true,
-                                ratingImdb: true,
-                                releaseYear: true,
-                                description: true,
-                                views: true,
-                            },
-                        },
+                        movie: true,
                     },
                 },
             },
         });
     },
-    async searchGenresByName(name: string, page: number): Promise<{ genres: Genre[] }> {
+    async addGenre(genreData: Prisma.GenreCreateInput): Promise<Genre | null> {
+        return await prisma.genre.create({
+            data: genreData,
+            include: {
+                movies: {
+                    select: {
+                        movie: true,
+                    },
+                },
+            },
+        });
+    },
+    async updateGenreById(genreData: Prisma.GenreUpdateInput, id: string): Promise<Genre | null> {
+        return await prisma.genre.update({
+            where: {
+                id: parseInt(id),
+            },
+            data: genreData,
+            include: {
+                movies: {
+                    select: {
+                        movie: true,
+                    },
+                },
+            },
+        });
+    },
+    async deleteGenreById(id: number): Promise<string> {
+        try {
+            await prisma.genre.delete({
+                where: {
+                    id,
+                },
+            });
+
+            return 'Genre deleted successfully';
+        } catch (error) {
+            throw new Error('Failed to delete genre');
+        }
+    },
+    async searchGenresByName(name: string, page: number): Promise<Genre[]> {
         const perPage = 20;
         const skip = perPage * (page - 1);
         const genres = await prisma.genre.findMany({
@@ -125,91 +135,13 @@ const genreService = {
             include: {
                 movies: {
                     select: {
-                        movie: {
-                            select: {
-                                id: true,
-                                title: true,
-                                videoSrc: true,
-                                photoSrc: true,
-                                trailerSrc: true,
-                                duration: true,
-                                ratingImdb: true,
-                                releaseYear: true,
-                                description: true,
-                                views: true,
-                            },
-                        },
+                        movie: true,
                     },
                 },
             },
         });
 
-        return { genres };
-    },
-    async addGenre(genreData: Prisma.GenreCreateInput): Promise<Genre | null> {
-        return await prisma.genre.create({
-            data: genreData,
-            include: {
-                movies: {
-                    select: {
-                        movie: {
-                            select: {
-                                id: true,
-                                title: true,
-                                videoSrc: true,
-                                photoSrc: true,
-                                trailerSrc: true,
-                                duration: true,
-                                ratingImdb: true,
-                                releaseYear: true,
-                                description: true,
-                                views: true,
-                            },
-                        },
-                    },
-                },
-            },
-        });
-    },
-    async updateGenreById(genreData: Prisma.GenreUpdateInput, id: string): Promise<Genre | null> {
-        return await prisma.genre.update({
-            where: {
-                id: parseInt(id),
-            },
-            data: genreData,
-            include: {
-                movies: {
-                    select: {
-                        movie: {
-                            select: {
-                                id: true,
-                                title: true,
-                                videoSrc: true,
-                                photoSrc: true,
-                                trailerSrc: true,
-                                duration: true,
-                                ratingImdb: true,
-                                releaseYear: true,
-                                description: true,
-                                views: true,
-                            },
-                        },
-                    },
-                },
-            },
-        });
-    },
-    async deleteGenreById(id: number): Promise<string> {
-        try {
-            await prisma.genre.delete({
-                where: {
-                    id,
-                },
-            });
-            return 'Genre deleted successfully';
-        } catch (error) {
-            throw new Error('Failed to delete genre');
-        }
+        return genres;
     },
 };
 

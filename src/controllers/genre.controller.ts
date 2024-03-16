@@ -7,7 +7,7 @@ const genreController = {
         const { sortBy, ascOrDesc, page, pageSize, name, filterValue, filterName, filterOperator } = req.query;
 
         try {
-            const { rows } = await genreService.getGenres({
+            const genres = await genreService.getGenres({
                 sortBy: sortBy! as string,
                 ascOrDesc: ascOrDesc! as 'asc' | 'desc',
                 perPage: pageSize ? Number(pageSize) : 20,
@@ -18,7 +18,11 @@ const genreController = {
                 filterOperatorString: filterOperator! as '>' | '=' | '<',
             });
 
-            res.status(200).send({ genres: rows });
+            if (genres) {
+                res.status(200).send(genres);
+            } else {
+                res.status(404).send(null);
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -43,9 +47,15 @@ const genreController = {
             .split('')
             .map((char) => (char === '-' ? ' ' : char))
             .join('');
+
         try {
             const genre = await genreService.getGenreByName(name);
-            res.status(200).send(genre);
+
+            if (genre) {
+                res.status(200).send(genre);
+            } else {
+                res.status(404).send(null);
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -98,7 +108,12 @@ const genreController = {
 
         try {
             const { genres } = await genreService.searchGenresByName(String(name), Number(page));
-            res.status(200).send({ genres: genres });
+
+            if (genres) {
+                res.status(200).send(genres);
+            } else {
+                res.status(400).send({ error: 'Genre not created' });
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }

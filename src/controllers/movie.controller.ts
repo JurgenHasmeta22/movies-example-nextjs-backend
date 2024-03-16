@@ -7,7 +7,7 @@ const movieController = {
         const { sortBy, ascOrDesc, page, pageSize, title, filterValue, filterName, filterOperator } = req.query;
 
         try {
-            const { rows, count } = await movieService.getMovies({
+            const movies = await movieService.getMovies({
                 sortBy: sortBy as string,
                 ascOrDesc: ascOrDesc as 'asc' | 'desc',
                 perPage: pageSize ? Number(pageSize) : 20,
@@ -18,7 +18,11 @@ const movieController = {
                 filterOperatorString: filterOperator as '>' | '=' | '<',
             });
 
-            res.status(200).send({ movies: rows, count });
+            if (movies) {
+                res.status(200).send(movies);
+            } else {
+                res.status(404).send(null);
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -120,8 +124,13 @@ const movieController = {
         const { title, page } = req.query;
 
         try {
-            const { movies, count } = await movieService.searchMoviesByTitle(String(title), Number(page));
-            res.status(200).send({ movies, count });
+            const movies = await movieService.searchMoviesByTitle(String(title), Number(page));
+
+            if (movies) {
+                res.status(200).send(movies);
+            } else {
+                res.status(404).send(null);
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
