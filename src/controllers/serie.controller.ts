@@ -7,7 +7,7 @@ const serieController = {
         const { sortBy, ascOrDesc, page, pageSize, title, filterValue, filterName, filterOperator } = req.query;
 
         try {
-            const { rows, count } = await serieService.getSeries({
+            const series = await serieService.getSeries({
                 sortBy: sortBy as string,
                 ascOrDesc: ascOrDesc as 'asc' | 'desc',
                 perPage: pageSize ? Number(pageSize) : 20,
@@ -18,7 +18,11 @@ const serieController = {
                 filterOperatorString: filterOperator as '>' | '=' | '<',
             });
 
-            res.status(200).send({ series: rows, count });
+            if (series) {
+                res.status(200).send(series);
+            } else {
+                res.status(404).send(null);
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -45,7 +49,12 @@ const serieController = {
             .join('');
         try {
             const serie = await serieService.getSerieByTitle(title);
-            res.status(200).send(serie);
+
+            if (serie) {
+                res.status(200).send(serie);
+            } else {
+                res.status(404).send({ error: 'Serie not found' });
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
@@ -53,26 +62,16 @@ const serieController = {
     async getLatestSeries(req: Request, res: Response) {
         try {
             const latestSeries = await serieService.getLatestSeries();
-            res.status(200).send(latestSeries);
+
+            if (latestSeries) {
+                res.status(200).send(latestSeries);
+            } else {
+                res.status(404).send(null);
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
     },
-    // async addSeasonToSerie(req: Request, res: Response) {
-    //     const { serieId, seasonId } = req.body;
-
-    //     try {
-    //         const updatedSerie = await serieService.addSeasonToSerie(seasonId, serieId);
-
-    //         if (updatedSerie) {
-    //             res.status(200).send(updatedSerie);
-    //         } else {
-    //             res.status(405).send({ error: 'Serie with new season not updated' });
-    //         }
-    //     } catch (err) {
-    //         res.status(400).send({ error: (err as Error).message });
-    //     }
-    // },
     async updateSerieById(req: Request, res: Response) {
         const serieBodyParams = req.body;
         const { id } = req.params;
@@ -120,8 +119,28 @@ const serieController = {
         const { title, page } = req.query;
 
         try {
-            const { series, count } = await serieService.searchSeriesByTitle(String(title), Number(page));
-            res.status(200).send({ series, count });
+            const series = await serieService.searchSeriesByTitle(String(title), Number(page));
+
+            if (series) {
+                res.status(200).send(series);
+            } else {
+                res.status(400).send(null);
+            }
+        } catch (err) {
+            res.status(400).send({ error: (err as Error).message });
+        }
+    },
+    async addSeasonToSerie(req: Request, res: Response) {
+        const { serieId, seasonId } = req.body;
+
+        try {
+            const updatedSerie = await serieService.addSeasonToSerie(seasonId, serieId);
+
+            if (updatedSerie) {
+                res.status(200).send(updatedSerie);
+            } else {
+                res.status(405).send({ error: 'Serie with new season not updated' });
+            }
         } catch (err) {
             res.status(400).send({ error: (err as Error).message });
         }
