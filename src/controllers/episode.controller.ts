@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import episodeService from '../services/episode.service';
-import { Episode } from '../models/episode.model';
+import { Episode } from '@prisma/client';
 
 const episodeController = {
     async getEpisodes(req: Request, res: Response) {

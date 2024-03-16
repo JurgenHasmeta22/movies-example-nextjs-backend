@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import authService from '../services/auth.service';
-import { User } from '../models/user.model';
 import { createToken } from '../utils/authUtils';
+import { User } from '@prisma/client';
 
 interface CustomRequest extends Request {
     user?: User;

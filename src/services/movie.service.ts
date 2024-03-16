@@ -1,5 +1,5 @@
+import { Movie, Prisma } from '@prisma/client';
 import { prisma } from '../app';
-import { Movie, MoviePatch, MoviePost } from '../models/movie.model';
 
 interface MovieServiceParams {
     sortBy: string;
@@ -71,7 +71,7 @@ const movieService = {
             include: { genres: { select: { genre: true } } },
         });
     },
-    async updateMovieById(movieParam: MoviePatch, id: string): Promise<Movie | null> {
+    async updateMovieById(movieParam: Prisma.MovieUpdateInput, id: string): Promise<Movie | null> {
         const movie: Movie | null = await prisma.movie.findUnique({
             where: { id: Number(id) },
         });
@@ -92,7 +92,7 @@ const movieService = {
             return null;
         }
     },
-    async addMovie(movieParam: MoviePost): Promise<Movie | null> {
+    async addMovie(movieParam: Prisma.MovieCreateInput): Promise<Movie | null> {
         const movieCreated = await prisma.movie.create({
             data: movieParam,
             include: { genres: { select: { genre: true } } },
