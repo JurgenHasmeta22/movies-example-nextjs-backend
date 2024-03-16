@@ -150,7 +150,7 @@ const serieService = {
 
             const serie = await prisma.serie.findUnique({
                 where: { id: serieId },
-                include: { seasons: { include: { episodes: true } } },
+                include: { seasons: { include: { episodes: true } }, usersWhoBookmarkedIt: { select: { user: true } } },
             });
 
             if (serie) {
