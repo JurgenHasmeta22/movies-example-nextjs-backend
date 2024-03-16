@@ -1,5 +1,6 @@
 import { prisma } from '../app';
-import { Genre, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { Genre } from '../models/genre.model';
 
 interface GetGenresParams {
     sortBy: string;

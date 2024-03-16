@@ -3,10 +3,10 @@ import userController from '../controllers/user.controller';
 import { validateMiddleware } from '../middlewares/validate.middleware';
 import { userSchemaUpdate, userSchemaPost, userQuerySchema } from '../schemas/user.schema';
 import { authMiddleware } from '../middlewares/auth.middleware';
-import { userSeasonSchema } from '@/schemas/userSeason.schema';
-import { userMovieSchema } from '@/schemas/userMovie.schema';
-import { userEpisodeSchema } from '@/schemas/userEpisode';
-import { userGenreSchema } from '@/schemas/userGenre.schema';
+import { userSeasonSchema } from '../schemas/userSeason.schema';
+import { userMovieSchema } from '../schemas/userMovie.schema';
+import { userEpisodeSchema } from '../schemas/userEpisode.schema';
+import { userGenreSchema } from '../schemas/userGenre.schema';
 
 const router = express.Router();
 
