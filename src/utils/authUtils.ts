@@ -1,6 +1,6 @@
 import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import { prisma } from '../app';
-import { User } from '../models/user.model';
+import { User } from '@prisma/client';
 
 export function createToken(id: number) {
     try {
