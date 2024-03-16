@@ -2324,6 +2324,7 @@ export const options = {
                 get: {
                     summary: 'Get all episodes',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     responses: {
                         '200': {
                             description: 'Successful response',
@@ -2349,6 +2350,7 @@ export const options = {
                 post: {
                     summary: 'Add a new episode',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     requestBody: {
                         required: true,
                         content: {
@@ -2380,6 +2382,7 @@ export const options = {
                 get: {
                     summary: 'Get episode by ID',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             name: 'id',
@@ -2414,6 +2417,7 @@ export const options = {
                 patch: {
                     summary: 'Update episode by ID',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             name: 'id',
@@ -2458,6 +2462,7 @@ export const options = {
                 put: {
                     summary: 'Update episode by ID',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             name: 'id',
@@ -2502,6 +2507,7 @@ export const options = {
                 delete: {
                     summary: 'Delete episode by ID',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             name: 'id',
@@ -2540,6 +2546,7 @@ export const options = {
                 get: {
                     summary: 'Get episode by title',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             name: 'title',
@@ -2575,6 +2582,7 @@ export const options = {
                 get: {
                     summary: 'Search episodes by title',
                     tags: ['Episodes'],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             name: 'title',
