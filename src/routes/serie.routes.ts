@@ -14,10 +14,10 @@ router.get('/series/:id', serieController.getSerieById);
 router.get('/series/:title', serieController.getSerieByTitle);
 router.delete('/series/:id', serieController.deleteSerieById);
 router.patch('/series/:id', serieSchemaUpdate, validateMiddleware, serieController.updateSerieById);
+router.put('/series/:id', serieSchemaPost, validateMiddleware, serieController.updateSerieById);
 router.post('/series', serieSchemaPost, validateMiddleware, serieController.addSerie);
 router.get('/searchSeries', serieController.searchSeriesByTitle);
 router.get('/latestSeries', serieController.getLatestSeries);
 router.post('/addSeasonToSerie', seasonSerieSchema, validateMiddleware, serieController.addSeasonToSerie);
-router.put('/series/:id', serieSchemaPost, validateMiddleware, serieController.updateSerieById);
 
 export default router;

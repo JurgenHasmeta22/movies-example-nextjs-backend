@@ -1639,6 +1639,50 @@ export const options = {
                         },
                     },
                 },
+                put: {
+                    summary: 'Replace a series by ID',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the series to replace',
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/Serie',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Series replaced',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Serie',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
             },
             '/series/{title}': {
                 get: {
@@ -1954,6 +1998,50 @@ export const options = {
                     responses: {
                         '200': {
                             description: 'User updated',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'User not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                put: {
+                    summary: 'Replace a user by ID',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the user to replace',
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/User',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'User replaced',
                             content: {
                                 'application/json': {
                                     schema: {
@@ -2324,6 +2412,50 @@ export const options = {
                     },
                 },
                 patch: {
+                    summary: 'Update episode by ID',
+                    tags: ['Episodes'],
+                    parameters: [
+                        {
+                            name: 'id',
+                            in: 'path',
+                            required: true,
+                            description: 'ID of the episode to update',
+                            schema: {
+                                type: 'integer',
+                                format: 'int64',
+                            },
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/Episode',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Successful response',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Episode',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Episode not found',
+                        },
+                        '400': {
+                            description: 'Bad request',
+                        },
+                    },
+                },
+                put: {
                     summary: 'Update episode by ID',
                     tags: ['Episodes'],
                     parameters: [
