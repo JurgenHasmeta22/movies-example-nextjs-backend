@@ -22,7 +22,7 @@ const userService = {
         filterValue,
         filterNameString,
         filterOperatorString,
-    }: UserServiceParams): Promise<User[]> {
+    }: UserServiceParams): Promise<User[] | null> {
         const filters: Prisma.UserWhereInput = {};
         const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
         const take = perPage || 20;
@@ -64,10 +64,14 @@ const userService = {
             },
         });
 
-        return users;
+        if (users) {
+            return users;
+        } else {
+            return null;
+        }
     },
     async getUserById(userId: number): Promise<User | null> {
-        return await prisma.user.findUnique({
+        const result = await prisma.user.findUnique({
             where: { id: userId },
             include: {
                 favMovies: {
@@ -87,9 +91,15 @@ const userService = {
                 favGenres: { select: { genre: true } },
             },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async getUserByUsername(username: string): Promise<User | null> {
-        return await prisma.user.findFirst({
+        const result = await prisma.user.findFirst({
             where: { userName: username },
             include: {
                 favMovies: {
@@ -109,9 +119,15 @@ const userService = {
                 favGenres: { select: { genre: true } },
             },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async updateUserById(userParam: Prisma.UserUpdateInput, id: string): Promise<User | null> {
-        return await prisma.user.update({
+        const result = await prisma.user.update({
             where: { id: Number(id) },
             data: userParam,
             include: {
@@ -132,6 +148,12 @@ const userService = {
                 favGenres: { select: { genre: true } },
             },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async deleteUserById(id: number): Promise<string | null> {
         const user = await prisma.user.findUnique({
@@ -144,11 +166,11 @@ const userService = {
             });
             return 'User deleted successfully';
         } else {
-            return 'User was not deleted';
+            return null;
         }
     },
-    async searchUsersByUsername(username: string, page: number): Promise<User[]> {
-        return await prisma.user.findMany({
+    async searchUsersByUsername(username: string, page: number): Promise<User[] | null> {
+        const result = await prisma.user.findMany({
             where: {
                 userName: { contains: username },
             },
@@ -172,6 +194,12 @@ const userService = {
             skip: page ? (page - 1) * 20 : 0,
             take: 20,
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async addSeasonToUser(userId: number, seasonId: number): Promise<User | null> {
         const season: Season | null = await prisma.season.findUnique({

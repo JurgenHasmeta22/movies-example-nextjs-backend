@@ -22,7 +22,7 @@ const movieService = {
         filterValue,
         filterNameString,
         filterOperatorString,
-    }: MovieServiceParams): Promise<Movie[]> {
+    }: MovieServiceParams): Promise<Movie[] | null> {
         const filters: any = {};
         const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
         const take = perPage || 20;
@@ -48,28 +48,50 @@ const movieService = {
             take,
         });
 
-        return movies;
+        if (movies) {
+            return movies;
+        } else {
+            return null;
+        }
     },
     async getMovieById(movieId: number): Promise<Movie | null> {
-        return await prisma.movie.findFirst({
+        const result = await prisma.movie.findFirst({
             where: { id: movieId },
             include: { genres: { select: { genre: true } } },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async getMovieByTitle(title: string): Promise<Movie | null> {
-        return await prisma.movie.findFirst({
+        const result = await prisma.movie.findFirst({
             where: { title },
             include: { genres: { select: { genre: true } } },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
-    async getLatestMovies(): Promise<Movie[]> {
-        return await prisma.movie.findMany({
+    async getLatestMovies(): Promise<Movie[] | null> {
+        const result = await prisma.movie.findMany({
             orderBy: {
                 id: 'desc',
             },
             take: 20,
             include: { genres: { select: { genre: true } } },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async updateMovieById(movieParam: Prisma.MovieUpdateInput, id: string): Promise<Movie | null> {
         const movie: Movie | null = await prisma.movie.findUnique({
@@ -117,13 +139,13 @@ const movieService = {
             if (result) {
                 return 'Movie deleted successfully';
             } else {
-                return 'Movie was not deleted';
+                return null;
             }
         } else {
             return null;
         }
     },
-    async searchMoviesByTitle(title: string, page: number): Promise<Movie[]> {
+    async searchMoviesByTitle(title: string, page: number): Promise<Movie[] | null> {
         const query = {
             where: {
                 title: { contains: title },
@@ -134,7 +156,12 @@ const movieService = {
         };
 
         const movies = await prisma.movie.findMany(query);
-        return movies;
+
+        if (movies) {
+            return movies;
+        } else {
+            return null;
+        }
     },
 };
 

@@ -22,7 +22,7 @@ const episodeService = {
         filterValue,
         filterNameString,
         filterOperatorString,
-    }: EpisodeServiceParams): Promise<Episode[]> {
+    }: EpisodeServiceParams): Promise<Episode[] | null> {
         const filters: any = {};
         const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
         const take = perPage || 20;
@@ -48,19 +48,35 @@ const episodeService = {
             take,
         });
 
-        return episodes;
+        if (episodes) {
+            return episodes;
+        } else {
+            return null;
+        }
     },
     async getEpisodeById(episodeId: number): Promise<Episode | null> {
-        return await prisma.episode.findFirst({
+        const result = await prisma.episode.findFirst({
             where: { id: episodeId },
             include: { season: true },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async getEpisodeByTitle(title: string): Promise<Episode | null> {
-        return await prisma.episode.findFirst({
+        const result = await prisma.episode.findFirst({
             where: { title },
             include: { season: true },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async updateEpisodeById(episodeParam: Prisma.EpisodeUpdateInput, id: string): Promise<Episode | null> {
         const episode: Episode | null = await prisma.episode.findUnique({
@@ -119,13 +135,13 @@ const episodeService = {
             if (result) {
                 return 'Episode deleted successfully';
             } else {
-                return 'Episode was not deleted';
+                return null;
             }
         } else {
             return null;
         }
     },
-    async searchEpisodesByTitle(title: string, page: number): Promise<Episode[]> {
+    async searchEpisodesByTitle(title: string, page: number): Promise<Episode[] | null> {
         const query = {
             where: {
                 title: { contains: title },
@@ -136,7 +152,12 @@ const episodeService = {
         };
 
         const episodes = await prisma.episode.findMany(query);
-        return episodes;
+
+        if (episodes) {
+            return episodes;
+        } else {
+            return null;
+        }
     },
 };
 
