@@ -3,6 +3,7 @@ import serieController from '../controllers/serie.controller';
 import { validateMiddleware } from '../middlewares/validate.middleware';
 import { serieSchemaUpdate, serieSchemaPost, serieQuerySchema } from '../schemas/serie.schema';
 import { authMiddleware } from '../middlewares/auth.middleware';
+import { seasonSerieSchema } from '@/schemas/seasonSerie.schema';
 
 const router = express.Router();
 
@@ -15,8 +16,8 @@ router.delete('/series/:id', serieController.deleteSerieById);
 router.patch('/series/:id', serieSchemaUpdate, validateMiddleware, serieController.updateSerieById);
 router.post('/series', serieSchemaPost, validateMiddleware, serieController.addSerie);
 router.get('/searchSeries', serieController.searchSeriesByTitle);
-// router.get('/latestSeries', serieController.getLatestSeries);
-// router.post('/favoritesSeries', favoriteSchema, validateMiddleware, serieController.addFavoriteSerieByUser);
+router.get('/latestSeries', serieController.getLatestSeries);
+router.post('/addSeasonToSerie', seasonSerieSchema, validateMiddleware, serieController.addSeasonToSerie);
 router.put('/series/:id', serieSchemaPost, validateMiddleware, serieController.updateSerieById);
 
 export default router;

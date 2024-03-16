@@ -205,7 +205,7 @@ export const options = {
                         duration: '148 minutes',
                     },
                 },
-                Favorite: {
+                UserMovie: {
                     type: 'object',
                     properties: {
                         id: {
@@ -411,7 +411,6 @@ export const options = {
                                 title: 'The Kingsroad',
                                 duration: '58 minutes',
                             },
-                            // Other episodes...
                         ],
                     },
                 },
@@ -1010,83 +1009,22 @@ export const options = {
             },
             '/genres': {
                 get: {
-                    summary: 'Returns the list of all genres',
+                    summary: 'Get all genres',
                     tags: ['Genres'],
-                    security: [
-                        {
-                            bearerAuth: [],
-                        },
-                    ],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
-                            name: 'sortBy',
                             in: 'query',
-                            schema: {
-                                type: 'string',
-                            },
-                            description: 'Sort field for genres (e.g., name)',
-                        },
-                        {
-                            name: 'ascOrDesc',
-                            in: 'query',
-                            schema: {
-                                type: 'string',
-                                enum: ['asc', 'desc'],
-                            },
-                            description: 'Sort order for genres (ascending or descending)',
-                        },
-                        {
-                            name: 'page',
-                            in: 'query',
-                            schema: {
-                                type: 'integer',
-                            },
-                            description: 'Page number for pagination',
-                        },
-                        {
-                            name: 'pageSize',
-                            in: 'query',
-                            schema: {
-                                type: 'integer',
-                            },
-                            description: 'Number of items per page for pagination',
-                        },
-                        {
                             name: 'name',
-                            in: 'query',
                             schema: {
                                 type: 'string',
                             },
-                            description: 'Search genres by name',
-                        },
-                        {
-                            name: 'filterValue',
-                            in: 'query',
-                            schema: {
-                                type: 'string',
-                            },
-                            description: 'Value to filter genres',
-                        },
-                        {
-                            name: 'filterName',
-                            in: 'query',
-                            schema: {
-                                type: 'string',
-                            },
-                            description: 'Name of the field to filter genres',
-                        },
-                        {
-                            name: 'filterOperator',
-                            in: 'query',
-                            schema: {
-                                type: 'string',
-                            },
-                            description: 'Operator to use for filtering (e.g., eq, gt, lt)',
+                            description: 'Name of the genre',
                         },
                     ],
                     responses: {
                         '200': {
-                            description: 'The list of genres',
+                            description: 'List of genres',
                             content: {
                                 'application/json': {
                                     schema: {
@@ -1098,29 +1036,28 @@ export const options = {
                                 },
                             },
                         },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
                     },
                 },
                 post: {
                     summary: 'Create a new genre',
                     tags: ['Genres'],
-                    security: [
-                        {
-                            bearerAuth: [],
-                        },
-                    ],
+                    security: [{ bearerAuth: [] }],
                     requestBody: {
                         required: true,
                         content: {
                             'application/json': {
                                 schema: {
-                                    $ref: '#/components/schemas/GenrePost',
+                                    $ref: '#/components/schemas/Genre',
                                 },
                             },
                         },
                     },
                     responses: {
-                        '200': {
-                            description: 'The genre was successfully created',
+                        '201': {
+                            description: 'Genre created',
                             content: {
                                 'application/json': {
                                     schema: {
@@ -1130,20 +1067,16 @@ export const options = {
                             },
                         },
                         '500': {
-                            description: 'Some server error',
+                            description: 'Internal Server Error',
                         },
                     },
                 },
             },
             '/genres/{id}': {
                 get: {
-                    summary: 'Get the genre by id',
+                    summary: 'Get a genre by ID',
                     tags: ['Genres'],
-                    security: [
-                        {
-                            bearerAuth: [],
-                        },
-                    ],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             in: 'path',
@@ -1152,12 +1085,12 @@ export const options = {
                                 type: 'number',
                             },
                             required: true,
-                            description: 'The genre id',
+                            description: 'ID of the genre to retrieve',
                         },
                     ],
                     responses: {
                         '200': {
-                            description: 'The genre description by id',
+                            description: 'Genre found',
                             content: {
                                 'application/json': {
                                     schema: {
@@ -1167,18 +1100,17 @@ export const options = {
                             },
                         },
                         '404': {
-                            description: 'The genre was not found',
+                            description: 'Genre not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
                         },
                     },
                 },
                 delete: {
-                    summary: 'Remove the genre by id',
+                    summary: 'Delete a genre by ID',
                     tags: ['Genres'],
-                    security: [
-                        {
-                            bearerAuth: [],
-                        },
-                    ],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             in: 'path',
@@ -1187,26 +1119,25 @@ export const options = {
                                 type: 'number',
                             },
                             required: true,
-                            description: 'The genre id',
+                            description: 'ID of the genre to delete',
                         },
                     ],
                     responses: {
                         '200': {
-                            description: 'The genre was deleted',
+                            description: 'Genre deleted',
                         },
                         '404': {
-                            description: 'The genre was not found',
+                            description: 'Genre not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
                         },
                     },
                 },
-                patch: {
-                    summary: 'Update the genre by id',
+                put: {
+                    summary: 'Update a genre by ID',
                     tags: ['Genres'],
-                    security: [
-                        {
-                            bearerAuth: [],
-                        },
-                    ],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             in: 'path',
@@ -1215,7 +1146,7 @@ export const options = {
                                 type: 'number',
                             },
                             required: true,
-                            description: 'The genre id to update',
+                            description: 'ID of the genre to update',
                         },
                     ],
                     requestBody: {
@@ -1223,14 +1154,14 @@ export const options = {
                         content: {
                             'application/json': {
                                 schema: {
-                                    $ref: '#/components/schemas/GenrePatch',
+                                    $ref: '#/components/schemas/Genre',
                                 },
                             },
                         },
                     },
                     responses: {
                         '200': {
-                            description: 'The genre was updated',
+                            description: 'Genre updated',
                             content: {
                                 'application/json': {
                                     schema: {
@@ -1240,23 +1171,372 @@ export const options = {
                             },
                         },
                         '404': {
-                            description: 'The genre was not found',
+                            description: 'Genre not found',
                         },
                         '500': {
-                            description: 'Some error happened',
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                patch: {
+                    summary: 'Update a genre partially by ID',
+                    tags: ['Genres'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the genre to update',
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/Genre',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Genre updated',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Genre',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Genre not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
                         },
                     },
                 },
             },
-            '/genres/{title}': {
+            '/genres/{name}': {
                 get: {
-                    summary: 'Get the genre by title',
+                    summary: 'Get a genre by name',
                     tags: ['Genres'],
-                    security: [
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
                         {
-                            bearerAuth: [],
+                            in: 'path',
+                            name: 'name',
+                            schema: {
+                                type: 'string',
+                            },
+                            required: true,
+                            description: 'Name of the genre to retrieve',
                         },
                     ],
+                    responses: {
+                        '200': {
+                            description: 'Genre found',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Genre',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Genre not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/searchGenres': {
+                get: {
+                    summary: 'Search genres by name',
+                    tags: ['Genres'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'query',
+                            name: 'name',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Name of the genre to search',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'List of genres matching the search query',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'array',
+                                        items: {
+                                            $ref: '#/components/schemas/Genre',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/series': {
+                get: {
+                    summary: 'Get all series',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'query',
+                            name: 'sortBy',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Field to sort by (e.g., "title")',
+                        },
+                        {
+                            in: 'query',
+                            name: 'ascOrDesc',
+                            schema: {
+                                type: 'string',
+                                enum: ['asc', 'desc'],
+                            },
+                            description: 'Sort order (ascending or descending)',
+                        },
+                        {
+                            in: 'query',
+                            name: 'page',
+                            schema: {
+                                type: 'integer',
+                                default: 1,
+                            },
+                            description: 'Page number for pagination',
+                        },
+                        {
+                            in: 'query',
+                            name: 'pageSize',
+                            schema: {
+                                type: 'integer',
+                                default: 20,
+                            },
+                            description: 'Number of items per page',
+                        },
+                        {
+                            in: 'query',
+                            name: 'title',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Title of the series',
+                        },
+                        {
+                            in: 'query',
+                            name: 'filterValue',
+                            schema: {
+                                type: 'integer',
+                            },
+                            description: 'Value to filter by',
+                        },
+                        {
+                            in: 'query',
+                            name: 'filterName',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Name of the field to filter by',
+                        },
+                        {
+                            in: 'query',
+                            name: 'filterOperator',
+                            schema: {
+                                type: 'string',
+                                enum: ['>', '=', '<'],
+                            },
+                            description: 'Filter operator (greater than, equal to, less than)',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'List of series',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'array',
+                                        items: {
+                                            $ref: '#/components/schemas/Serie',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                post: {
+                    summary: 'Create a new series',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/Serie',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '201': {
+                            description: 'Series created',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Serie',
+                                    },
+                                },
+                            },
+                        },
+                        '400': {
+                            description: 'Bad request',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/series/{id}': {
+                get: {
+                    summary: 'Get a series by ID',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the series to retrieve',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'Series found',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Serie',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                delete: {
+                    summary: 'Delete a series by ID',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the series to delete',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'Series deleted',
+                        },
+                        '404': {
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                patch: {
+                    summary: 'Update a series partially by ID',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the series to update',
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/Serie',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Series updated',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Serie',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/series/{title}': {
+                get: {
+                    summary: 'Get a series by title',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
                     parameters: [
                         {
                             in: 'path',
@@ -1265,59 +1545,145 @@ export const options = {
                                 type: 'string',
                             },
                             required: true,
-                            description: 'The genre title',
+                            description: 'Title of the series to retrieve',
                         },
                     ],
                     responses: {
                         '200': {
-                            description: 'The genre description by title',
+                            description: 'Series found',
                             content: {
                                 'application/json': {
                                     schema: {
-                                        $ref: '#/components/schemas/Genre',
+                                        $ref: '#/components/schemas/Serie',
                                     },
                                 },
                             },
                         },
                         '404': {
-                            description: 'The genre was not found',
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
                         },
                     },
                 },
             },
-            '/searchGenres': {
-                get: {
-                    summary: 'Search genres',
-                    tags: ['Genres'],
-                    security: [
-                        {
-                            bearerAuth: [],
-                        },
-                    ],
-                    parameters: [
-                        {
-                            in: 'query',
-                            name: 'name',
-                            schema: {
-                                type: 'string',
+            '/addSeasonToSerie': {
+                post: {
+                    summary: 'Add a season to a series',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        serieId: {
+                                            type: 'number',
+                                        },
+                                        seasonId: {
+                                            type: 'number',
+                                        },
+                                    },
+                                },
                             },
-                            required: true,
-                            description: 'The name of the genre to search',
                         },
-                    ],
+                    },
                     responses: {
                         '200': {
-                            description: 'The list of genres matching the search criteria',
+                            description: 'Serie updated with the new season',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/Serie',
+                                    },
+                                },
+                            },
+                        },
+                        '405': {
+                            description: 'Serie with new season not updated',
+                        },
+                        '400': {
+                            description: 'Bad request',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/latestSeries': {
+                get: {
+                    summary: 'Get the latest series',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    responses: {
+                        '200': {
+                            description: 'List of latest series',
                             content: {
                                 'application/json': {
                                     schema: {
                                         type: 'array',
                                         items: {
-                                            $ref: '#/components/schemas/Genre',
+                                            $ref: '#/components/schemas/Serie',
                                         },
                                     },
                                 },
                             },
+                        },
+                        '404': {
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/searchSeries': {
+                get: {
+                    summary: 'Search series by title',
+                    tags: ['Series'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'query',
+                            name: 'title',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Title of the series to search',
+                        },
+                        {
+                            in: 'query',
+                            name: 'page',
+                            schema: {
+                                type: 'number',
+                            },
+                            description: 'Page number for pagination',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'List of series matching the search query',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'array',
+                                        items: {
+                                            $ref: '#/components/schemas/Serie',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
                         },
                     },
                 },
