@@ -1,0 +1,157 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  userName String [not null]
+  email String [unique, not null]
+  password String [not null]
+  comments Comment [not null]
+  favMovies UserMovie [not null]
+  favSeries UserSerie [not null]
+  favGenres UserGenre [not null]
+  favSeasons UserSeason [not null]
+  favEpisodes UserEpisode [not null]
+}
+
+Table Movie {
+  id Int [pk, increment]
+  title String [not null, default: '']
+  videoSrc String [not null, default: '']
+  photoSrc String [not null, default: '']
+  trailerSrc String [not null, default: '']
+  duration String [not null, default: '']
+  ratingImdb Float [not null, default: 5]
+  releaseYear Int [not null, default: 2023]
+  description String [not null, default: '']
+  views Int [not null, default: 0]
+  genres MovieGenre [not null]
+  usersWhoBookmarkedIt UserMovie [not null]
+}
+
+Table Serie {
+  id Int [pk, increment]
+  title String [not null, default: '']
+  photoSrc String [not null, default: '']
+  releaseYear Int [not null, default: 2020]
+  ratingImdb Float [not null, default: 5]
+  seasons Season [not null]
+  usersWhoBookmarkedIt UserSerie [not null]
+}
+
+Table Season {
+  id Int [pk, increment]
+  title String [not null, default: '']
+  photoSrc String [not null, default: '']
+  releaseYear Int [not null, default: 2020]
+  ratingImdb Float [not null, default: 5]
+  serieId Int [not null, default: 1]
+  serie Serie [not null]
+  episodes Episode [not null]
+  usersWhoBookmarkedIt UserSeason [not null]
+}
+
+Table Episode {
+  id Int [pk, increment]
+  title String [not null, default: '']
+  photoSrc String [not null, default: '']
+  videoSrc String [not null, default: '']
+  description String [not null, default: '']
+  seasonId Int [not null]
+  season Season [not null]
+  usersWhoBookmarkedIt UserEpisode [not null]
+}
+
+Table Comment {
+  id Int [pk, increment]
+  content String [not null, default: '']
+  createdAt DateTime [default: `now()`, not null]
+  userId Int [not null]
+  user User [not null]
+}
+
+Table Genre {
+  id Int [pk, increment]
+  name String [not null, default: '']
+  movies MovieGenre [not null]
+  usersWhoBookmarkedIt UserGenre [not null]
+}
+
+Table UserMovie {
+  id Int [pk, increment]
+  userId Int [not null]
+  movieId Int [not null]
+  user User [not null]
+  movie Movie [not null]
+}
+
+Table UserGenre {
+  id Int [pk, increment]
+  userId Int [not null]
+  genreId Int [not null]
+  user User [not null]
+  genre Genre [not null]
+}
+
+Table UserSerie {
+  id Int [pk, increment]
+  userId Int [not null]
+  serieId Int [not null]
+  user User [not null]
+  serie Serie [not null]
+}
+
+Table UserEpisode {
+  id Int [pk, increment]
+  userId Int [not null]
+  episodeId Int [not null]
+  user User [not null]
+  episode Episode [not null]
+}
+
+Table UserSeason {
+  id Int [pk, increment]
+  userId Int [not null]
+  seasonId Int [not null]
+  user User [not null]
+  season Season [not null]
+}
+
+Table MovieGenre {
+  id Int [pk, increment]
+  movieId Int [not null]
+  genreId Int [not null]
+  movie Movie [not null]
+  genre Genre [not null]
+}
+
+Ref: Season.serieId > Serie.id [delete: Cascade]
+
+Ref: Episode.seasonId > Season.id [delete: Cascade]
+
+Ref: Comment.userId > User.id [delete: Cascade]
+
+Ref: UserMovie.userId > User.id [delete: Cascade]
+
+Ref: UserMovie.movieId > Movie.id [delete: Cascade]
+
+Ref: UserGenre.userId > User.id [delete: Cascade]
+
+Ref: UserGenre.genreId > Genre.id [delete: Cascade]
+
+Ref: UserSerie.userId > User.id [delete: Cascade]
+
+Ref: UserSerie.serieId > Serie.id [delete: Cascade]
+
+Ref: UserEpisode.userId > User.id [delete: Cascade]
+
+Ref: UserEpisode.episodeId > Episode.id [delete: Cascade]
+
+Ref: UserSeason.userId > User.id [delete: Cascade]
+
+Ref: UserSeason.seasonId > Season.id [delete: Cascade]
+
+Ref: MovieGenre.movieId > Movie.id [delete: Cascade]
+
+Ref: MovieGenre.genreId > Genre.id [delete: Cascade]
