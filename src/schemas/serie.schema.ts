@@ -1,13 +1,6 @@
 import { body, query } from 'express-validator';
 
-
-const allowedSortByProperties = [
-    'id',
-    'photoSrc',
-    'releaseYear',
-    'title',
-    'ratingImdb',
-];
+const allowedSortByProperties = ['id', 'photoSrc', 'releaseYear', 'title', 'ratingImdb'];
 
 const serieQuerySchema = [
     query('sortBy')

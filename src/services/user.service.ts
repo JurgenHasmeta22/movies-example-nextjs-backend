@@ -9,7 +9,7 @@ interface UserServiceParams {
     ascOrDesc: 'asc' | 'desc';
     perPage: number;
     page: number;
-    title?: string | null;
+    userName?: string | null;
     filterValue?: number | string;
     filterNameString?: string | null;
     filterOperatorString?: '>' | '=' | '<' | 'gt' | 'equals' | 'lt';
@@ -21,7 +21,7 @@ const userService = {
         ascOrDesc,
         perPage,
         page,
-        title,
+        userName,
         filterValue,
         filterNameString,
         filterOperatorString,
@@ -30,7 +30,7 @@ const userService = {
         const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
         const take = perPage || 20;
 
-        if (title) filters.userName = { contains: title };
+        if (userName) filters.userName = { contains: userName };
 
         if (filterValue !== undefined && filterNameString && filterOperatorString) {
             const operator = filterOperatorString === '>' ? 'gt' : filterOperatorString === '<' ? 'lt' : 'equals';
@@ -49,11 +49,21 @@ const userService = {
             skip,
             take,
             include: {
-                favGenres: { select: { genre: true } },
-                favMovies: { select: { movie: true } },
+                favMovies: {
+                    select: {
+                        movie: {
+                            include: {
+                                genres: {
+                                    select: { genre: true },
+                                },
+                            },
+                        },
+                    },
+                },
                 favSeries: { select: { serie: true } },
                 favEpisodes: { select: { episode: true } },
                 favSeasons: { select: { season: true } },
+                favGenres: { select: { genre: true } },
             },
         });
 
@@ -63,23 +73,43 @@ const userService = {
         return await prisma.user.findUnique({
             where: { id: userId },
             include: {
-                favGenres: { select: { genre: true } },
-                favMovies: { select: { movie: true } },
+                favMovies: {
+                    select: {
+                        movie: {
+                            include: {
+                                genres: {
+                                    select: { genre: true },
+                                },
+                            },
+                        },
+                    },
+                },
                 favSeries: { select: { serie: true } },
                 favEpisodes: { select: { episode: true } },
                 favSeasons: { select: { season: true } },
+                favGenres: { select: { genre: true } },
             },
         });
     },
-    async getUserByTitle(title: string): Promise<User | null> {
+    async getUserByUsername(username: string): Promise<User | null> {
         return await prisma.user.findFirst({
-            where: { userName: title },
+            where: { userName: username },
             include: {
-                favGenres: { select: { genre: true } },
-                favMovies: { select: { movie: true } },
+                favMovies: {
+                    select: {
+                        movie: {
+                            include: {
+                                genres: {
+                                    select: { genre: true },
+                                },
+                            },
+                        },
+                    },
+                },
                 favSeries: { select: { serie: true } },
                 favEpisodes: { select: { episode: true } },
                 favSeasons: { select: { season: true } },
+                favGenres: { select: { genre: true } },
             },
         });
     },
@@ -88,11 +118,21 @@ const userService = {
             where: { id: Number(id) },
             data: userParam,
             include: {
-                favGenres: { select: { genre: true } },
-                favMovies: { select: { movie: true } },
+                favMovies: {
+                    select: {
+                        movie: {
+                            include: {
+                                genres: {
+                                    select: { genre: true },
+                                },
+                            },
+                        },
+                    },
+                },
                 favSeries: { select: { serie: true } },
                 favEpisodes: { select: { episode: true } },
                 favSeasons: { select: { season: true } },
+                favGenres: { select: { genre: true } },
             },
         });
     },
@@ -110,17 +150,27 @@ const userService = {
             return 'User was not deleted';
         }
     },
-    async searchUsersByTitle(title: string, page: number): Promise<User[]> {
+    async searchUsersByUsername(username: string, page: number): Promise<User[]> {
         return await prisma.user.findMany({
             where: {
-                userName: { contains: title },
+                userName: { contains: username },
             },
             include: {
-                favGenres: { select: { genre: true } },
-                favMovies: { select: { movie: true } },
+                favMovies: {
+                    select: {
+                        movie: {
+                            include: {
+                                genres: {
+                                    select: { genre: true },
+                                },
+                            },
+                        },
+                    },
+                },
                 favSeries: { select: { serie: true } },
                 favEpisodes: { select: { episode: true } },
                 favSeasons: { select: { season: true } },
+                favGenres: { select: { genre: true } },
             },
             skip: page ? (page - 1) * 20 : 0,
             take: 20,
@@ -140,11 +190,21 @@ const userService = {
             const user = await prisma.user.findUnique({
                 where: { id: userId },
                 include: {
-                    favGenres: { select: { genre: true } },
-                    favMovies: { select: { movie: true } },
+                    favMovies: {
+                        select: {
+                            movie: {
+                                include: {
+                                    genres: {
+                                        select: { genre: true },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     favSeries: { select: { serie: true } },
                     favEpisodes: { select: { episode: true } },
                     favSeasons: { select: { season: true } },
+                    favGenres: { select: { genre: true } },
                 },
             });
 
@@ -171,11 +231,21 @@ const userService = {
             const user = await prisma.user.findUnique({
                 where: { id: userId },
                 include: {
-                    favGenres: { select: { genre: true } },
-                    favMovies: { select: { movie: true } },
+                    favMovies: {
+                        select: {
+                            movie: {
+                                include: {
+                                    genres: {
+                                        select: { genre: true },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     favSeries: { select: { serie: true } },
                     favEpisodes: { select: { episode: true } },
                     favSeasons: { select: { season: true } },
+                    favGenres: { select: { genre: true } },
                 },
             });
 
@@ -202,11 +272,21 @@ const userService = {
             const user = await prisma.user.findUnique({
                 where: { id: userId },
                 include: {
-                    favGenres: { select: { genre: true } },
-                    favMovies: { select: { movie: true } },
+                    favMovies: {
+                        select: {
+                            movie: {
+                                include: {
+                                    genres: {
+                                        select: { genre: true },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     favSeries: { select: { serie: true } },
                     favEpisodes: { select: { episode: true } },
                     favSeasons: { select: { season: true } },
+                    favGenres: { select: { genre: true } },
                 },
             });
 
@@ -233,11 +313,21 @@ const userService = {
             const user = await prisma.user.findUnique({
                 where: { id: userId },
                 include: {
-                    favGenres: { select: { genre: true } },
-                    favMovies: { select: { movie: true } },
+                    favMovies: {
+                        select: {
+                            movie: {
+                                include: {
+                                    genres: {
+                                        select: { genre: true },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     favSeries: { select: { serie: true } },
                     favEpisodes: { select: { episode: true } },
                     favSeasons: { select: { season: true } },
+                    favGenres: { select: { genre: true } },
                 },
             });
 
@@ -246,6 +336,38 @@ const userService = {
             } else {
                 return null;
             }
+        } else {
+            return null;
+        }
+    },
+    async addMovieToUser(userId: number, movieId: number): Promise<User | null> {
+        await prisma.userMovie.create({
+            data: { userId, movieId },
+        });
+
+        const user: User | null = await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                favMovies: {
+                    select: {
+                        movie: {
+                            include: {
+                                genres: {
+                                    select: { genre: true },
+                                },
+                            },
+                        },
+                    },
+                },
+                favSeries: { select: { serie: true } },
+                favEpisodes: { select: { episode: true } },
+                favSeasons: { select: { season: true } },
+                favGenres: { select: { genre: true } },
+            },
+        });
+
+        if (user) {
+            return user;
         } else {
             return null;
         }
