@@ -1,4 +1,4 @@
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const allowedSortByProperties = ['id', 'photoSrc', 'releaseYear', 'title', 'ratingImdb'];
 
@@ -26,6 +26,16 @@ const serieQuerySchema = [
         .withMessage('Invalid filterOperator value'),
 ];
 
+const serieIdParamSchema = [param('id').isInt({ min: 1 }).withMessage('Invalid serie ID format')];
+
+const serieTitleParamSchema = [
+    param('title')
+        .isString()
+        .trim()
+        .matches(/^[a-zA-Z\s]+$/)
+        .withMessage('Invalid serie title format'),
+];
+
 const serieSchemaUpdate = [
     body('title').optional().isString(),
     body('photoSrc').optional().isString(),
@@ -40,4 +50,4 @@ const serieSchemaPost = [
     body('ratingImdb').isNumeric(),
 ];
 
-export { serieSchemaPost, serieSchemaUpdate, serieQuerySchema };
+export { serieSchemaPost, serieSchemaUpdate, serieQuerySchema, serieIdParamSchema, serieTitleParamSchema };

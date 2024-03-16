@@ -1,6 +1,16 @@
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const allowedSortByProperties = ['userName', 'email'];
+
+const userIdParamSchema = [param('id').isInt({ min: 1 }).withMessage('Invalid user ID format')];
+
+const userUserNameParamSchema = [
+    param('userName')
+        .isString()
+        .trim()
+        .matches(/^[a-zA-Z\s]+$/)
+        .withMessage('Invalid user userName format'),
+];
 
 const userQuerySchema = [
     query('sortBy')
@@ -33,4 +43,4 @@ const userSchemaUpdate = [
 ];
 const userSchemaPost = [body('userName').isString(), body('email').isString().isEmail(), body('password').isString()];
 
-export { userSchemaPost, userSchemaUpdate, userQuerySchema };
+export { userSchemaPost, userSchemaUpdate, userQuerySchema, userIdParamSchema, userUserNameParamSchema };

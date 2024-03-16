@@ -1,6 +1,16 @@
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const allowedSortByProperties = ['id', 'title', 'photoSrc', 'videoSrc', 'description'];
+
+const episodeIdParamSchema = [param('id').isInt({ min: 1 }).withMessage('Invalid episode ID format')];
+
+const episodeTitleParamSchema = [
+    param('title')
+        .isString()
+        .trim()
+        .matches(/^[a-zA-Z\s]+$/)
+        .withMessage('Invalid episode title format'),
+];
 
 const episodeQuerySchema = [
     query('sortBy')
@@ -42,4 +52,4 @@ const episodeSchemaPost = [
     body('serieId').isNumeric(),
 ];
 
-export { episodeSchemaPost, episodeSchemaUpdate, episodeQuerySchema };
+export { episodeSchemaPost, episodeSchemaUpdate, episodeQuerySchema, episodeIdParamSchema, episodeTitleParamSchema };
