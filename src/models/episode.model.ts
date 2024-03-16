@@ -6,6 +6,6 @@ export interface Episode {
     photoSrc: string;
     videoSrc: string;
     description: string;
-    serieId: number;
+    serieId?: number;
     serie?: Serie;
 }
