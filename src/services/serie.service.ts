@@ -22,7 +22,7 @@ const serieService = {
         filterValue,
         filterNameString,
         filterOperatorString,
-    }: SerieServiceParams): Promise<Serie[]> {
+    }: SerieServiceParams): Promise<Serie[] | null> {
         const filters: any = {};
         const skip = perPage ? (page ? (page - 1) * perPage : 0) : page ? (page - 1) * 20 : 0;
         const take = perPage || 20;
@@ -48,28 +48,50 @@ const serieService = {
             take,
         });
 
-        return series;
+        if (series) {
+            return series;
+        } else {
+            return null;
+        }
     },
     async getSerieById(serieId: number): Promise<Serie | null> {
-        return await prisma.serie.findFirst({
+        const result = await prisma.serie.findFirst({
             where: { id: serieId },
             include: { seasons: { include: { episodes: true } } },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async getSerieByTitle(title: string): Promise<Serie | null> {
-        return await prisma.serie.findFirst({
+        const result = await prisma.serie.findFirst({
             where: { title },
             include: { seasons: { include: { episodes: true } } },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
-    async getLatestSeries(): Promise<Serie[]> {
-        return await prisma.serie.findMany({
+    async getLatestSeries(): Promise<Serie[] | null> {
+        const result = await prisma.serie.findMany({
             orderBy: {
                 id: 'desc',
             },
             take: 20,
             include: { seasons: { include: { episodes: true } } },
         });
+
+        if (result) {
+            return result;
+        } else {
+            return null;
+        }
     },
     async updateSerieById(serieParam: Prisma.SerieUpdateInput, id: string): Promise<Serie | null> {
         const serie: Serie | null = await prisma.serie.findUnique({
@@ -117,13 +139,13 @@ const serieService = {
             if (result) {
                 return 'Serie deleted successfully';
             } else {
-                return 'Serie was not deleted';
+                return null;
             }
         } else {
             return null;
         }
     },
-    async searchSeriesByTitle(title: string, page: number): Promise<Serie[]> {
+    async searchSeriesByTitle(title: string, page: number): Promise<Serie[] | null> {
         const query = {
             where: {
                 title: { contains: title },
@@ -134,7 +156,12 @@ const serieService = {
         };
 
         const series = await prisma.serie.findMany(query);
-        return series;
+
+        if (series) {
+            return series;
+        } else {
+            return null;
+        }
     },
     async addSeasonToSerie(serieId: number, seasonId: number): Promise<Serie | null> {
         const season: Season | null = await prisma.season.findUnique({

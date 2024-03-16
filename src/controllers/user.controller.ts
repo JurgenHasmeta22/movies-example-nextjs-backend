@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import userService from '../services/user.service';
 import { User } from '@prisma/client';
+import HttpStatusCode from '../utils/httpStatusCodes';
 
 const userController = {
     async getUsers(req: Request, res: Response) {
@@ -19,12 +20,12 @@ const userController = {
             });
 
             if (users) {
-                res.status(200).send(users);
+                res.status(HttpStatusCode.OK).send(users);
             } else {
-                res.status(404).send(null);
+                res.status(HttpStatusCode.NotFound).send({ error: 'User not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async getUserById(req: Request, res: Response) {
@@ -34,12 +35,12 @@ const userController = {
             const user = await userService.getUserById(userId);
 
             if (user) {
-                res.status(200).send(user);
+                res.status(HttpStatusCode.OK).send(user);
             } else {
-                res.status(404).send({ error: 'User not found' });
+                res.status(HttpStatusCode.NotFound).send({ error: 'User not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async getUserByTitle(req: Request, res: Response) {
@@ -51,12 +52,12 @@ const userController = {
             const user = await userService.getUserByUsername(title);
 
             if (user) {
-                res.status(200).send(user);
+                res.status(HttpStatusCode.OK).send(user);
             } else {
-                res.status(404).send({ error: 'User not found' });
+                res.status(HttpStatusCode.NotFound).send({ error: 'User not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async updateUserById(req: Request, res: Response) {
@@ -67,12 +68,12 @@ const userController = {
             const user: User | null = await userService.updateUserById(userBodyParams, id);
 
             if (user) {
-                res.status(200).send(user);
+                res.status(HttpStatusCode.OK).send(user);
             } else {
-                res.status(404).send({ error: 'User not found' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'User not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async deleteUserById(req: Request, res: Response) {
@@ -80,11 +81,16 @@ const userController = {
 
         try {
             const result = await userService.deleteUserById(idParam);
-            res.status(200).send({
-                msg: result === 'User deleted successfully' ? result : 'User was not deleted',
-            });
+
+            if (result) {
+                res.status(HttpStatusCode.OK).send({
+                    msg: 'User deleted successfully',
+                });
+            } else {
+                res.status(HttpStatusCode.Conflict).send({ error: 'User not deleted' });
+            }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async searchUsersByTitle(req: Request, res: Response) {
@@ -94,12 +100,12 @@ const userController = {
             const users = await userService.searchUsersByUsername(String(title), Number(page));
 
             if (users) {
-                res.status(200).send(users);
+                res.status(HttpStatusCode.OK).send(users);
             } else {
-                res.status(400).send(null);
+                res.status(HttpStatusCode.NotFound).send({ error: 'Users not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addSeasonToUser(req: Request, res: Response) {
@@ -109,12 +115,12 @@ const userController = {
             const updatedUser = await userService.addSeasonToUser(userId, seasonId);
 
             if (updatedUser) {
-                res.status(200).send(updatedUser);
+                res.status(HttpStatusCode.OK).send(updatedUser);
             } else {
-                res.status(405).send({ error: 'User with new season not updated' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'User with new season not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addSerieToUser(req: Request, res: Response) {
@@ -124,12 +130,12 @@ const userController = {
             const updatedUser = await userService.addSerieToUser(userId, serieId);
 
             if (updatedUser) {
-                res.status(200).send(updatedUser);
+                res.status(HttpStatusCode.OK).send(updatedUser);
             } else {
-                res.status(405).send({ error: 'User with new serie not updated' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'User with new serie not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addEpisodeToUser(req: Request, res: Response) {
@@ -139,12 +145,12 @@ const userController = {
             const updatedUser = await userService.addEpisodeToUser(userId, episodeId);
 
             if (updatedUser) {
-                res.status(200).send(updatedUser);
+                res.status(HttpStatusCode.OK).send(updatedUser);
             } else {
-                res.status(405).send({ error: 'User with new episode not updated' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'User with new episode not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addGenreToUser(req: Request, res: Response) {
@@ -154,12 +160,12 @@ const userController = {
             const updatedUser = await userService.addGenreToUser(userId, genreId);
 
             if (updatedUser) {
-                res.status(200).send(updatedUser);
+                res.status(HttpStatusCode.OK).send(updatedUser);
             } else {
-                res.status(405).send({ error: 'User with new genre not updated' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'User with new genre not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addMovieToUser(req: Request, res: Response) {
@@ -169,12 +175,12 @@ const userController = {
             const updatedUser = await userService.addMovieToUser(userId, movieId);
 
             if (updatedUser) {
-                res.status(200).send(updatedUser);
+                res.status(HttpStatusCode.OK).send(updatedUser);
             } else {
-                res.status(400).send({ error: 'Favorites movies not updated' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'Favorites movies not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
 };

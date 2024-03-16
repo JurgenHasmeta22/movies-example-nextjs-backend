@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import serieService from '../services/serie.service';
 import { Serie } from '@prisma/client';
+import HttpStatusCode from '../utils/httpStatusCodes';
 
 const serieController = {
     async getSeries(req: Request, res: Response) {
@@ -19,12 +20,12 @@ const serieController = {
             });
 
             if (series) {
-                res.status(200).send(series);
+                res.status(HttpStatusCode.OK).send(series);
             } else {
-                res.status(404).send(null);
+                res.status(HttpStatusCode.NotFound).send({ error: 'Series not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async getSerieById(req: Request, res: Response) {
@@ -34,12 +35,12 @@ const serieController = {
             const serie = await serieService.getSerieById(serieId);
 
             if (serie) {
-                res.status(200).send(serie);
+                res.status(HttpStatusCode.OK).send(serie);
             } else {
-                res.status(404).send({ error: 'Serie not found' });
+                res.status(HttpStatusCode.NotFound).send({ error: 'Serie not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async getSerieByTitle(req: Request, res: Response) {
@@ -51,12 +52,12 @@ const serieController = {
             const serie = await serieService.getSerieByTitle(title);
 
             if (serie) {
-                res.status(200).send(serie);
+                res.status(HttpStatusCode.OK).send(serie);
             } else {
-                res.status(404).send({ error: 'Serie not found' });
+                res.status(HttpStatusCode.NotFound).send({ error: 'Serie not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async getLatestSeries(req: Request, res: Response) {
@@ -64,12 +65,12 @@ const serieController = {
             const latestSeries = await serieService.getLatestSeries();
 
             if (latestSeries) {
-                res.status(200).send(latestSeries);
+                res.status(HttpStatusCode.OK).send(latestSeries);
             } else {
-                res.status(404).send(null);
+                res.status(HttpStatusCode.NotFound).send({ error: 'Series not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async updateSerieById(req: Request, res: Response) {
@@ -80,12 +81,12 @@ const serieController = {
             const serie: Serie | null = await serieService.updateSerieById(serieBodyParams, id);
 
             if (serie) {
-                res.status(200).send(serie);
+                res.status(HttpStatusCode.OK).send(serie);
             } else {
-                res.status(404).send({ error: 'Serie not found' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'Serie not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addSerie(req: Request, res: Response) {
@@ -95,12 +96,12 @@ const serieController = {
             const serie: Serie | null = await serieService.addSerie(serieBodyParams);
 
             if (serie) {
-                res.status(200).send(serie);
+                res.status(HttpStatusCode.Created).send(serie);
             } else {
-                res.status(400).send({ error: 'Serie not created' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'Serie not created' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async deleteSerieById(req: Request, res: Response) {
@@ -108,11 +109,16 @@ const serieController = {
 
         try {
             const result = await serieService.deleteSerieById(idParam);
-            res.status(200).send({
-                msg: result === 'Serie deleted successfully' ? result : 'Serie was not deleted',
-            });
+
+            if (result) {
+                res.status(HttpStatusCode.OK).send({
+                    msg: 'Serie deleted successfully',
+                });
+            } else {
+                res.status(HttpStatusCode.Conflict).send({ error: 'Serie not deleted' });
+            }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async searchSeriesByTitle(req: Request, res: Response) {
@@ -122,12 +128,12 @@ const serieController = {
             const series = await serieService.searchSeriesByTitle(String(title), Number(page));
 
             if (series) {
-                res.status(200).send(series);
+                res.status(HttpStatusCode.OK).send(series);
             } else {
-                res.status(400).send(null);
+                res.status(HttpStatusCode.NotFound).send({ error: 'Serie not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addSeasonToSerie(req: Request, res: Response) {
@@ -137,12 +143,12 @@ const serieController = {
             const updatedSerie = await serieService.addSeasonToSerie(seasonId, serieId);
 
             if (updatedSerie) {
-                res.status(200).send(updatedSerie);
+                res.status(HttpStatusCode.OK).send(updatedSerie);
             } else {
-                res.status(405).send({ error: 'Serie with new season not updated' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'Serie with new season not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
 };

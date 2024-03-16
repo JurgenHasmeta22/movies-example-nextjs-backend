@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import genreService from '../services/genre.service';
 import { Genre } from '@prisma/client';
+import HttpStatusCode from '../utils/httpStatusCodes';
 
 const genreController = {
     async getGenres(req: Request, res: Response) {
@@ -19,12 +20,12 @@ const genreController = {
             });
 
             if (genres) {
-                res.status(200).send(genres);
+                res.status(HttpStatusCode.OK).send(genres);
             } else {
-                res.status(404).send(null);
+                res.status(HttpStatusCode.NotFound).send({ error: 'Genres not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async getGenreById(req: Request, res: Response) {
@@ -34,12 +35,12 @@ const genreController = {
             const genre = await genreService.getGenreById(genreId);
 
             if (genre) {
-                res.status(200).send(genre);
+                res.status(HttpStatusCode.OK).send(genre);
             } else {
-                res.status(404).send({ error: 'Genre not found' });
+                res.status(HttpStatusCode.NotFound).send({ error: 'Genre not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async getGenreByName(req: Request, res: Response) {
@@ -52,12 +53,12 @@ const genreController = {
             const genre = await genreService.getGenreByName(name);
 
             if (genre) {
-                res.status(200).send(genre);
+                res.status(HttpStatusCode.OK).send(genre);
             } else {
-                res.status(404).send(null);
+                res.status(HttpStatusCode.NotFound).send({ error: 'Genre not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async addGenre(req: Request, res: Response) {
@@ -67,12 +68,12 @@ const genreController = {
             const genre: Genre | null = await genreService.addGenre(genreBodyParams);
 
             if (genre) {
-                res.status(200).send(genre);
+                res.status(HttpStatusCode.Created).send(genre);
             } else {
-                res.status(400).send({ error: 'Genre not created' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'Genre not created' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async updateGenreById(req: Request, res: Response) {
@@ -83,12 +84,12 @@ const genreController = {
             const genre: Genre | null = await genreService.updateGenreById(genreBodyParams, id);
 
             if (genre) {
-                res.status(200).send(genre);
+                res.status(HttpStatusCode.OK).send(genre);
             } else {
-                res.status(400).send({ error: 'Genre not updated' });
+                res.status(HttpStatusCode.Conflict).send({ error: 'Genre not updated' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async deleteGenreById(req: Request, res: Response) {
@@ -96,11 +97,16 @@ const genreController = {
 
         try {
             const result = await genreService.deleteGenreById(idParam);
-            res.status(200).send({
-                msg: result === 'Genre deleted successfully' ? result : 'Genre was not deleted',
-            });
+
+            if (result) {
+                res.status(HttpStatusCode.OK).send({
+                    msg: 'Genre deleted successfully',
+                });
+            } else {
+                res.status(HttpStatusCode.Conflict).send({ error: 'Genre not deleted' });
+            }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
     async searchGenresByName(req: Request, res: Response) {
@@ -110,12 +116,12 @@ const genreController = {
             const genres = await genreService.searchGenresByName(String(name), Number(page));
 
             if (genres) {
-                res.status(200).send(genres);
+                res.status(HttpStatusCode.OK).send(genres);
             } else {
-                res.status(400).send({ error: 'Genre not created' });
+                res.status(HttpStatusCode.NotFound).send({ error: 'Genres not found' });
             }
         } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
+            res.status(HttpStatusCode.BadRequest).send({ error: (err as Error).message });
         }
     },
 };
