@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import serieService from '../services/serie.service';
-import { Serie } from '../models/serie.model';
+import { Serie } from '@prisma/client';
 
 const serieController = {
     async getSeries(req: Request, res: Response) {

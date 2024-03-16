@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../app';
-import { User } from '../models/user.model';
+import { User } from '@prisma/client';
 
 const authService = {
     async signUp(userData: { email: string; password: string; userName: string }): Promise<User | null> {

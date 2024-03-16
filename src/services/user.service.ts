@@ -1,8 +1,5 @@
-import { Prisma, Season } from '@prisma/client';
+import { Episode, Genre, Prisma, Season, User } from '@prisma/client';
 import { prisma } from '../app';
-import { User } from '../models/user.model';
-import { Genre } from '../models/genre.model';
-import { Episode } from '../models/episode.model';
 
 interface UserServiceParams {
     sortBy: string;

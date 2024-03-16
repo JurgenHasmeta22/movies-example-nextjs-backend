@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { getUserFromToken } from '../utils/authUtils';
-import { User } from '../models/user.model';
+import { User } from '@prisma/client';
 
 interface CustomRequest extends Request {
     user?: User;

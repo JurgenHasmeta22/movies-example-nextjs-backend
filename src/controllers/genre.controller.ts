@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import genreService from '../services/genre.service';
-import { Genre } from '../models/genre.model';
+import { Genre } from '@prisma/client';
 
 const genreController = {
     async getGenres(req: Request, res: Response) {

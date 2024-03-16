@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import movieService from '../services/movie.service';
-import { Movie } from '../models/movie.model';
+import { Movie } from '@prisma/client';
 
 const movieController = {
     async getMovies(req: Request, res: Response) {

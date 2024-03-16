@@ -1,6 +1,5 @@
-import { Season } from '@prisma/client';
+import { Season, Serie, Prisma } from '@prisma/client';
 import { prisma } from '../app';
-import { Serie, SeriePatch, SeriePost } from '../models/serie.model';
 
 interface SerieServiceParams {
     sortBy: string;
@@ -72,7 +71,7 @@ const serieService = {
             include: { seasons: { include: { episodes: true } } },
         });
     },
-    async updateSerieById(serieParam: SeriePatch, id: string): Promise<Serie | null> {
+    async updateSerieById(serieParam: Prisma.SerieUpdateInput, id: string): Promise<Serie | null> {
         const serie: Serie | null = await prisma.serie.findUnique({
             where: { id: Number(id) },
         });
@@ -93,7 +92,7 @@ const serieService = {
             return null;
         }
     },
-    async addSerie(serieParam: SeriePost): Promise<Serie | null> {
+    async addSerie(serieParam: Prisma.SerieCreateInput): Promise<Serie | null> {
         const serieCreated = await prisma.serie.create({
             data: serieParam,
             include: { seasons: { include: { episodes: true } } },
