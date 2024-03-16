@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getUserFromToken } from '../utils/authUtils';
 import { User } from '@prisma/client';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 
 interface CustomRequest extends Request {
     user?: User;
@@ -28,7 +29,11 @@ export async function authMiddleware(req: CustomRequest, res: Response, next: Ne
         } else {
             return res.status(401).json({ message: 'Unauthorized' });
         }
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error' });
+    } catch (error: any) {
+        if (error instanceof JsonWebTokenError || error instanceof TokenExpiredError) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        } else {
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
     }
 }
