@@ -1,4 +1,4 @@
-import { Season } from '@prisma/client';
+import { Prisma, Season } from '@prisma/client';
 import { prisma } from '../app';
 import { Episode, EpisodePatch, EpisodePost } from '../models/episode.model';
 
@@ -85,13 +85,24 @@ const episodeService = {
         }
     },
     async addEpisode(episodeParam: EpisodePost): Promise<Episode | null> {
-        const episodeCreated = await prisma.episode.create({
-            data: episodeParam,
-            include: { season: true },
+        const existingSeason = await prisma.season.findUnique({
+            where: { id: episodeParam.seasonId },
         });
 
-        if (episodeCreated) {
-            return episodeCreated;
+        if (existingSeason) {
+            const episodeCreated = await prisma.episode.create({
+                data: {
+                    ...episodeParam,
+                    season: { connect: { id: existingSeason.id } },
+                } as Prisma.EpisodeCreateInput,
+                include: { season: true, usersWhoBookmarkedIt: { select: { user: true } } },
+            });
+
+            if (episodeCreated) {
+                return episodeCreated;
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

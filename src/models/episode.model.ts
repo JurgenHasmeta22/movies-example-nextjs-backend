@@ -1,13 +1,13 @@
-import { Serie } from './serie.model';
+import Season from './season.model';
 
 export interface Episode {
-    id: number;
+    id?: number;
     title: string;
     photoSrc: string;
     videoSrc: string;
     description: string;
-    serieId?: number;
-    serie?: Serie;
+    seasonId?: number;
+    season?: Season;
 }
 
 export interface EpisodePost {
@@ -15,8 +15,7 @@ export interface EpisodePost {
     photoSrc: string;
     videoSrc: string;
     description: string;
-    serieId?: number;
-    serie?: Serie;
+    seasonId?: number;
 }
 
 export interface EpisodePatch {
@@ -24,6 +23,5 @@ export interface EpisodePatch {
     photoSrc?: string;
     videoSrc?: string;
     description?: string;
-    serieId?: number;
-    serie?: Serie;
+    seasonId?: number;
 }
