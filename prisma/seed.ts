@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { movieGenres, movies, series, episodes } from './movies';
+import { series, seasons, episodes } from './movies';
 
 const prisma = new PrismaClient({
     log: ['query', 'info', 'warn', 'error'],
@@ -33,45 +33,17 @@ const users = [
     },
 ];
 
-const genres = [
-    { name: 'Aksion' },
-    { name: 'Aziatik' },
-    { name: 'Krim' },
-    { name: 'NETFLIX' },
-    { name: 'Horror' },
-    { name: 'Thriller' },
-    { name: 'Fantashkencë' },
-    { name: 'Fantazi' },
-    { name: 'Dramë' },
-    { name: 'Spanjoll' },
-    { name: 'Aventurë' },
-    { name: 'Komedi' },
-    { name: 'Histori' },
-    { name: 'Luftë' },
-    { name: 'Rus' },
-    { name: 'Romancë' },
-    { name: 'Biografi' },
-    { name: 'Italian' },
-    { name: 'Mister' },
-    { name: 'Sport' },
-    { name: 'Familjar' },
-    { name: 'Muzikë' },
-    { name: 'Animuar' },
-    { name: 'Erotik +18' },
-    { name: 'Nordik' },
-    { name: 'SË SHPEJTI' },
-    { name: 'Dokumentar' },
-    { name: 'Turk' },
-    { name: 'Gjerman' },
-    { name: 'Francez' },
-    { name: 'Hindi' },
-];
-
 async function createStuff() {
     await prisma.serie.deleteMany();
 
     for (const serie of series) {
         await prisma.serie.create({ data: serie });
+    }
+
+    // await prisma.season.deleteMany();
+
+    for (const season of seasons) {
+        await prisma.season.create({ data: season });
     }
 
     await prisma.episode.deleteMany();
