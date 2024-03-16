@@ -27,34 +27,43 @@ export async function getUserFromToken(token: string) {
     try {
         const secret: Secret = process.env.MY_SECRET || 'defaultSecret';
         const data = jwt.verify(token, secret);
-        const user: User | null = await prisma.user.findUnique({
-            where: { id: (data as JwtPayload).id },
-            include: {
-                favMovies: {
-                    select: {
-                        movie: {
-                            include: {
-                                genres: {
-                                    select: { genre: true },
+
+        if (data) {
+            const user: User | null = await prisma.user.findUnique({
+                where: { id: (data as JwtPayload).id },
+                include: {
+                    favMovies: {
+                        select: {
+                            movie: {
+                                include: {
+                                    genres: {
+                                        select: { genre: true },
+                                    },
                                 },
                             },
                         },
                     },
+                    favSeries: { select: { serie: true } },
+                    favEpisodes: { select: { episode: true } },
+                    favSeasons: { select: { season: true } },
+                    favGenres: { select: { genre: true } },
                 },
-                favSeries: { select: { serie: true } },
-                favEpisodes: { select: { episode: true } },
-                favSeasons: { select: { season: true } },
-                favGenres: { select: { genre: true } },
-            },
-        });
+            });
 
-        if (user) {
-            logAudit('UserRetrieval', user.id, 'getUserFromToken');
-            return user;
-        } else {
-            return null;
+            if (user) {
+                logAudit('UserRetrieval', user.id, 'getUserFromToken');
+                return user;
+            } else {
+                return null;
+            }
         }
     } catch (error) {
-        throw new Error('Failed to retrieve user from token');
+        if (error instanceof jwt.JsonWebTokenError) {
+            console.error('JWT Error:', error.message);
+            return null;
+        } else {
+            console.error('Failed to retrieve user from token:', error);
+            throw error;
+        }
     }
 }
