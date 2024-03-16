@@ -62,21 +62,6 @@ const movieController = {
             res.status(400).send({ error: (err as Error).message });
         }
     },
-    async addFavoriteMovieByUser(req: Request, res: Response) {
-        const { movieId, userId } = req.body;
-
-        try {
-            const updatedUser = await movieService.addFavoriteMovieByUserId(userId, movieId);
-
-            if (updatedUser) {
-                res.status(200).send(updatedUser);
-            } else {
-                res.status(400).send({ error: 'Favorites movies not updated' });
-            }
-        } catch (err) {
-            res.status(400).send({ error: (err as Error).message });
-        }
-    },
     async updateMovieById(req: Request, res: Response) {
         const movieBodyParams = req.body;
         const { id } = req.params;

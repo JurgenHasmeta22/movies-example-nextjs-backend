@@ -72,34 +72,6 @@ const movieService = {
             include: { genres: { select: { genre: true } } },
         });
     },
-    async addFavoriteMovieByUserId(userId: number, movieId: number): Promise<User | null> {
-        await prisma.favoriteMovie.create({
-            data: { userId, movieId },
-        });
-
-        const user: User | null = await prisma.user.findUnique({
-            where: { id: userId },
-            include: {
-                favMovies: {
-                    select: {
-                        movie: {
-                            include: {
-                                genres: {
-                                    select: { genre: true },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
-
-        if (user) {
-            return user;
-        } else {
-            return null;
-        }
-    },
     async updateMovieById(movieParam: MoviePatch, id: string): Promise<Movie | null> {
         const movie: Movie | null = await prisma.movie.findUnique({
             where: { id: Number(id) },
