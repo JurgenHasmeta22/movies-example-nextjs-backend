@@ -3,7 +3,7 @@ import serieController from '../controllers/serie.controller';
 import { validateMiddleware } from '../middlewares/validate.middleware';
 import { serieSchemaUpdate, serieSchemaPost, serieQuerySchema } from '../schemas/serie.schema';
 import { authMiddleware } from '../middlewares/auth.middleware';
-import { seasonSerieSchema } from '@/schemas/seasonSerie.schema';
+import { seasonSerieSchema } from '../schemas/seasonSerie.schema';
 
 const router = express.Router();
 

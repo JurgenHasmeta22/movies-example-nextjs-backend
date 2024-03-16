@@ -1,7 +1,6 @@
 import { Season } from '@prisma/client';
 import { prisma } from '../app';
 import { Serie, SeriePatch, SeriePost } from '../models/serie.model';
-import { User } from '../models/user.model';
 
 interface SerieServiceParams {
     sortBy: string;
