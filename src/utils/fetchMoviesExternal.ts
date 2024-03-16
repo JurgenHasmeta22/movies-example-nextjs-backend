@@ -2,10 +2,9 @@ import { XMLParser } from 'fast-xml-parser';
 import fetch from 'node-fetch';
 import { parse } from 'node-html-parser';
 import { prisma } from '../app';
-import { Genre } from '../models/genre.model';
-import { Movie } from '../models/movie.model';
 import https from 'https';
 import fs from 'fs';
+import { Genre, Movie, Prisma } from '@prisma/client';
 
 async function addLatestMovies() {
     const resq = await fetch('https://www.filma24.sh/feed/', {
@@ -43,15 +42,12 @@ async function addLatestMovies() {
         const singleMovie = await fetch(movie.link);
         const singleMovieText = await singleMovie.text();
         const singleMovieHtml = parse(singleMovieText);
-
         const movieLink = singleMovieHtml.querySelector('div.player div.movie-player p iframe')?.attributes.src;
         const movieTitle = singleMovieHtml.querySelector('.movie-info .main-info .title h2')?.innerText;
         const trailerLink = singleMovieHtml.querySelector('.trailer-player iframe')?.attributes.src;
         const genreLis = singleMovieHtml.querySelectorAll('.secondary-info .info-left .genre li');
-
-        const genres: any[] = [];
+        const genres: Genre[] | any = [];
         genreLis.forEach((li) => genres.push(li.innerText));
-
         const movieLength = singleMovieHtml.querySelector('.info-right span.movie-len')?.innerText;
         const releaseYear = singleMovieHtml.querySelector('.info-right span.quality')?.innerText;
         const imdbRating = singleMovieHtml.querySelector('.info-right span:last-child a')?.innerText;
@@ -60,6 +56,7 @@ async function addLatestMovies() {
         const thumbnail = thumbnai?.includes('https')
             ? thumbnai
             : thumbnai?.replace('http', 'https').replace('.so', '.sh');
+
         const file = fs.createWriteStream(`public/images/${thumbnail?.split('/').pop()}`);
         const request = https.get(thumbnail!, function (response) {
             response.pipe(file);
@@ -68,6 +65,7 @@ async function addLatestMovies() {
         movies.push({
             title: movieTitle!,
             videoSrc: movieLink!,
+            // @ts-ignore
             genres,
             trailerSrc: trailerLink!,
             duration: movieLength!,

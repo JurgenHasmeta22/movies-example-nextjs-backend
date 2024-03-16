@@ -1,7 +1,17 @@
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const genreSchemaUpdate = [body('name').optional().isString()];
 const genreSchemaPost = [body('name').isString()];
+
+const genreIdParamSchema = [param('id').isInt({ min: 1 }).withMessage('Invalid movie ID format')];
+
+const genreNameParamSchema = [
+    param('name')
+        .isString()
+        .trim()
+        .matches(/^[a-zA-Z\s]+$/)
+        .withMessage('Invalid movie name format'),
+];
 
 const allowedSortByProperties = ['name', 'id', 'createdAt', 'updatedAt'];
 
@@ -28,4 +38,5 @@ const genreQuerySchema = [
         .isIn(['equals', 'contains', 'startsWith', 'endsWith'])
         .withMessage('Invalid filterOperator value'),
 ];
-export { genreSchemaPost, genreSchemaUpdate, genreQuerySchema };
+
+export { genreSchemaPost, genreSchemaUpdate, genreQuerySchema, genreIdParamSchema, genreNameParamSchema };

@@ -1,4 +1,4 @@
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 const allowedSortByProperties = [
     'id',
@@ -37,6 +37,16 @@ const movieQuerySchema = [
         .withMessage('Invalid filterOperator value'),
 ];
 
+const movieIdParamSchema = [param('id').isInt({ min: 1 }).withMessage('Invalid movie ID format')];
+
+const movieTitleParamSchema = [
+    param('title')
+        .isString()
+        .trim()
+        .matches(/^[a-zA-Z\s]+$/)
+        .withMessage('Invalid movie title format'),
+];
+
 const movieSchemaUpdate = [
     body('title').optional().isString(),
     body('videoSrc').optional().isString(),
@@ -61,4 +71,4 @@ const movieSchemaPost = [
     body('views').isInt({ min: 0 }),
 ];
 
-export { movieSchemaPost, movieSchemaUpdate, movieQuerySchema };
+export { movieSchemaPost, movieSchemaUpdate, movieQuerySchema, movieIdParamSchema, movieTitleParamSchema };
