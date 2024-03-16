@@ -526,6 +526,114 @@ export const options = {
                         duration: '60 minutes',
                     },
                 },
+                UserGenre: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'ID of the user genre relation',
+                        },
+                        userId: {
+                            type: 'number',
+                            description: 'ID of the user',
+                        },
+                        genreId: {
+                            type: 'number',
+                            description: 'ID of the genre',
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was created',
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was last updated',
+                        },
+                    },
+                },
+                UserSerie: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'ID of the user serie relation',
+                        },
+                        userId: {
+                            type: 'number',
+                            description: 'ID of the user',
+                        },
+                        serieId: {
+                            type: 'number',
+                            description: 'ID of the serie',
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was created',
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was last updated',
+                        },
+                    },
+                },
+                UserEpisode: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'ID of the user episode relation',
+                        },
+                        userId: {
+                            type: 'number',
+                            description: 'ID of the user',
+                        },
+                        episodeId: {
+                            type: 'number',
+                            description: 'ID of the episode',
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was created',
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was last updated',
+                        },
+                    },
+                },
+                UserSeason: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'number',
+                            description: 'ID of the user season relation',
+                        },
+                        userId: {
+                            type: 'number',
+                            description: 'ID of the user',
+                        },
+                        seasonId: {
+                            type: 'number',
+                            description: 'ID of the season',
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was created',
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time',
+                            description: 'Date and time when the relation was last updated',
+                        },
+                    },
+                },
             },
         },
         tags: [
@@ -1681,6 +1789,442 @@ export const options = {
                         },
                         '404': {
                             description: 'Series not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/users': {
+                get: {
+                    summary: 'Get all users',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'query',
+                            name: 'userName',
+                            schema: {
+                                type: 'string',
+                            },
+                            description: 'Username of the user',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'List of users',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        type: 'array',
+                                        items: {
+                                            $ref: '#/components/schemas/User',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'No users found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                post: {
+                    summary: 'Create a new user',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/User',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '201': {
+                            description: 'User created',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/users/{id}': {
+                get: {
+                    summary: 'Get a user by ID',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the user to retrieve',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'User found',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'User not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                delete: {
+                    summary: 'Delete a user by ID',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the user to delete',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'User deleted',
+                        },
+                        '404': {
+                            description: 'User not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+                patch: {
+                    summary: 'Update a user by ID',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'id',
+                            schema: {
+                                type: 'number',
+                            },
+                            required: true,
+                            description: 'ID of the user to update',
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/User',
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'User updated',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'User not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/users/{title}': {
+                get: {
+                    summary: 'Get a user by username',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    parameters: [
+                        {
+                            in: 'path',
+                            name: 'title',
+                            schema: {
+                                type: 'string',
+                            },
+                            required: true,
+                            description: 'Username of the user to retrieve',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'User found',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'User not found',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/addSeasonToUser': {
+                post: {
+                    summary: 'Add a season to user',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        userId: {
+                                            type: 'number',
+                                            description: 'ID of the user to add season',
+                                        },
+                                        seasonId: {
+                                            type: 'number',
+                                            description: 'ID of the season to add to the user',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Season added to user',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '405': {
+                            description: 'User with new season not updated',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/addSerieToUser': {
+                post: {
+                    summary: 'Add a serie to user',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        userId: {
+                                            type: 'number',
+                                            description: 'ID of the user to add serie',
+                                        },
+                                        serieId: {
+                                            type: 'number',
+                                            description: 'ID of the serie to add to the user',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Serie added to user',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '405': {
+                            description: 'User with new serie not updated',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/addEpisodeToUser': {
+                post: {
+                    summary: 'Add an episode to user',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        userId: {
+                                            type: 'number',
+                                            description: 'ID of the user to add episode',
+                                        },
+                                        episodeId: {
+                                            type: 'number',
+                                            description: 'ID of the episode to add to the user',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Episode added to user',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '405': {
+                            description: 'User with new episode not updated',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/addGenreToUser': {
+                post: {
+                    summary: 'Add a genre to user',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        userId: {
+                                            type: 'number',
+                                            description: 'ID of the user to add genre',
+                                        },
+                                        genreId: {
+                                            type: 'number',
+                                            description: 'ID of the genre to add to the user',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Genre added to user',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '405': {
+                            description: 'User with new genre not updated',
+                        },
+                        '500': {
+                            description: 'Internal Server Error',
+                        },
+                    },
+                },
+            },
+            '/addMovieToUser': {
+                post: {
+                    summary: 'Add a movie to user',
+                    tags: ['Users'],
+                    security: [{ bearerAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        userId: {
+                                            type: 'number',
+                                            description: 'ID of the user to add movie',
+                                        },
+                                        movieId: {
+                                            type: 'number',
+                                            description: 'ID of the movie to add to the user',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Movie added to user',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/User',
+                                    },
+                                },
+                            },
+                        },
+                        '405': {
+                            description: 'Favorites movies not updated',
                         },
                         '500': {
                             description: 'Internal Server Error',
