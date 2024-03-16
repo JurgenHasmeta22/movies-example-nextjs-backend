@@ -15,8 +15,8 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/movies', movieQuerySchema, validateMiddleware, movieController.getMovies);
-router.get('/movies/:id', movieIdParamSchema, validateMiddleware, movieController.getMovieById);
-router.get('/movies/:title', movieTitleParamSchema, validateMiddleware, movieController.getMovieByTitle);
+router.get('/getMovieById/:id', movieIdParamSchema, validateMiddleware, movieController.getMovieById);
+router.get('/getMovieByTitle/:title', movieTitleParamSchema, validateMiddleware, movieController.getMovieByTitle);
 router.delete('/movies/:id', movieIdParamSchema, validateMiddleware, movieController.deleteMovieById);
 router.patch('/movies/:id', movieIdParamSchema, movieSchemaUpdate, validateMiddleware, movieController.updateMovieById);
 router.put('/movies/:id', movieIdParamSchema, movieSchemaPost, validateMiddleware, movieController.updateMovieById);

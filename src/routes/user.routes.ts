@@ -19,8 +19,8 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/users', userQuerySchema, validateMiddleware, userController.getUsers);
-router.get('/users/:id', userIdParamSchema, validateMiddleware, userController.getUserById);
-router.get('/users/:userName', userUserNameParamSchema, validateMiddleware, userController.getUserByTitle);
+router.get('/getUserById/:id', userIdParamSchema, validateMiddleware, userController.getUserById);
+router.get('/getUserByTitle/:userName', userUserNameParamSchema, validateMiddleware, userController.getUserByTitle);
 router.delete('/users/:id', userIdParamSchema, validateMiddleware, userController.deleteUserById);
 router.patch('/users/:id', userIdParamSchema, userSchemaUpdate, validateMiddleware, userController.updateUserById);
 router.put('/users/:id', userIdParamSchema, userSchemaPost, validateMiddleware, userController.updateUserById);

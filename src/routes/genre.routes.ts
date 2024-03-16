@@ -15,8 +15,8 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get('/genres', genreQuerySchema, validateMiddleware, genreController.getGenres);
-router.get('/genres/:id', genreIdParamSchema, validateMiddleware, genreController.getGenreById);
-router.get('/genres/:name', genreNameParamSchema, validateMiddleware, genreController.getGenreByName);
+router.get('/getGenreById/:id', genreIdParamSchema, validateMiddleware, genreController.getGenreById);
+router.get('/getGenreByName/:name', genreNameParamSchema, validateMiddleware, genreController.getGenreByName);
 router.delete('/genres/:id', genreIdParamSchema, validateMiddleware, genreController.deleteGenreById);
 router.put('/genres/:id', genreIdParamSchema, genreSchemaPost, validateMiddleware, genreController.updateGenreById);
 router.patch('/genres/:id', genreIdParamSchema, genreSchemaUpdate, validateMiddleware, genreController.updateGenreById);
