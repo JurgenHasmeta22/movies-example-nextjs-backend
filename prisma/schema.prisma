@@ -80,17 +80,41 @@ model Message {
 model Movie {
   id                   Int                 @id @default(autoincrement())
   title                String              @default("")
-  videoSrc             String              @default("")
   photoSrc             String              @default("")
   trailerSrc           String              @default("")
   duration             String              @default("")
   ratingImdb           Float               @default(5.0)
   releaseYear          Int                 @default(2023)
   description          String              @default("")
+  cast                 CastMovie[]
   genres               MovieGenre[]
   comments             Comment[]
   usersWhoBookmarkedIt UserMovieFavorite[]
   usersWhoRatedIt      UserMovieRating[]
+}
+
+model CastMovie {
+  id      Int   @id @default(autoincrement())
+  movieId Int
+  actorId Int
+  movie   Movie @relation(fields: [movieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  actor   Actor @relation(fields: [actorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model CastSerie {
+  id      Int   @id @default(autoincrement())
+  serieId Int
+  actorId Int
+  serie   Serie @relation(fields: [serieId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  actor Actor @relation(fields: [actorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Actor {
+  id            Int         @id @default(autoincrement())
+  name          String
+  starredMovies CastMovie[]
+  starredSeries CastSerie[]
 }
 
 model MovieGenre {
@@ -116,6 +140,7 @@ model Serie {
   photoSrc             String              @default("")
   releaseYear          Int                 @default(2020)
   ratingImdb           Float               @default(5.0)
+  cast                 CastSerie[]
   seasons              Season[]
   comments             Comment[]
   usersWhoBookmarkedIt UserSerieFavorite[]
