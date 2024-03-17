@@ -64,17 +64,40 @@ Table Message {
 Table Movie {
   id Int [pk, increment]
   title String [not null, default: '']
-  videoSrc String [not null, default: '']
   photoSrc String [not null, default: '']
   trailerSrc String [not null, default: '']
   duration String [not null, default: '']
   ratingImdb Float [not null, default: 5]
   releaseYear Int [not null, default: 2023]
   description String [not null, default: '']
+  cast CastMovie [not null]
   genres MovieGenre [not null]
   comments Comment [not null]
   usersWhoBookmarkedIt UserMovieFavorite [not null]
   usersWhoRatedIt UserMovieRating [not null]
+}
+
+Table CastMovie {
+  id Int [pk, increment]
+  movieId Int [not null]
+  actorId Int [not null]
+  movie Movie [not null]
+  actor Actor [not null]
+}
+
+Table CastSerie {
+  id Int [pk, increment]
+  serieId Int [not null]
+  actorId Int [not null]
+  serie Serie [not null]
+  actor Actor [not null]
+}
+
+Table Actor {
+  id Int [pk, increment]
+  name String [not null]
+  starredMovies CastMovie [not null]
+  starredSeries CastSerie [not null]
 }
 
 Table MovieGenre {
@@ -100,6 +123,7 @@ Table Serie {
   photoSrc String [not null, default: '']
   releaseYear Int [not null, default: 2020]
   ratingImdb Float [not null, default: 5]
+  cast CastSerie [not null]
   seasons Season [not null]
   comments Comment [not null]
   usersWhoBookmarkedIt UserSerieFavorite [not null]
@@ -249,6 +273,14 @@ Ref: Message.senderId > User.id [delete: Cascade]
 Ref: Message.receiverId > User.id [delete: Cascade]
 
 Ref: Message.chatId > Chat.id [delete: Cascade]
+
+Ref: CastMovie.movieId > Movie.id [delete: Cascade]
+
+Ref: CastMovie.actorId > Actor.id [delete: Cascade]
+
+Ref: CastSerie.serieId > Serie.id [delete: Cascade]
+
+Ref: CastSerie.actorId > Actor.id [delete: Cascade]
 
 Ref: MovieGenre.movieId > Movie.id [delete: Cascade]
 
