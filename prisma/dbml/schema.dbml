@@ -72,8 +72,8 @@ Table Movie {
   releaseYear Int [not null, default: 2023]
   description String [not null, default: '']
   genres MovieGenre [not null]
-  usersWhoBookmarkedIt UserMovieFavorite [not null]
   comments Comment [not null]
+  usersWhoBookmarkedIt UserMovieFavorite [not null]
   usersWhoRatedIt UserMovieRating [not null]
 }
 
