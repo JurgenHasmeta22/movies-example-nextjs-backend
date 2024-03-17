@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { series, seasons, episodes } from './movies';
+import { series, seasons, episodes, movies } from './movies';
 
 const prisma = new PrismaClient({
     log: ['query', 'info', 'warn', 'error'],
@@ -10,7 +10,7 @@ const users = [
     {
         id: 1,
         userName: 'avenger22',
-        email: 'jurgenhasmeta@email.com',
+        email: 'jurgen@email.com',
         password: bcrypt.hashSync('jurgen123', 8),
     },
     {
@@ -34,23 +34,23 @@ const users = [
 ];
 
 async function createStuff() {
-    await prisma.serie.deleteMany();
+    // await prisma.serie.deleteMany();
 
-    for (const serie of series) {
-        await prisma.serie.create({ data: serie });
-    }
+    // for (const serie of series) {
+    //     await prisma.serie.create({ data: serie });
+    // }
 
     // await prisma.season.deleteMany();
 
-    for (const season of seasons) {
-        await prisma.season.create({ data: season });
-    }
+    // for (const season of seasons) {
+    //     await prisma.season.create({ data: season });
+    // }
 
-    await prisma.episode.deleteMany();
+    // await prisma.episode.deleteMany();
 
-    for (const episode of episodes) {
-        await prisma.episode.create({ data: episode });
-    }
+    // for (const episode of episodes) {
+    //     await prisma.episode.create({ data: episode });
+    // }
 
     // await prisma.user.deleteMany();
 
@@ -64,13 +64,13 @@ async function createStuff() {
     //   await prisma.genre.create({ data: genre });
     // }
 
-    // await prisma.movie.deleteMany();
+    await prisma.movie.deleteMany();
 
-    // for (const movie of movies) {
-    //   await prisma.movie.create({
-    //     data: { ...movie, views: Math.floor(Math.random() * 1000) },
-    //   });
-    // }
+    for (const movie of movies) {
+        await prisma.movie.create({
+            data: movie,
+        });
+    }
 
     // await prisma.movieGenre.deleteMany();
 
