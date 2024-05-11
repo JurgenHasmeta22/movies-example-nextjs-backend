@@ -1,5 +1,6 @@
 node_modules
-prisma/migrations
-prisma/data.db
-prisma/movies.ts
-prisma/seed.ts
+/prisma/migrations
+/prisma/data.db
+/prisma/movies.ts
+/prisma/seed.ts
+.env
